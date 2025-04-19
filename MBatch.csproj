@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+	<EnablePackageValidation>true</EnablePackageValidation>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Title>MBatch</Title>
+    <Version>0.0.1</Version>
+    <Authors>Marcin Gutka</Authors>
+    <PackageTags>Azure Batch; Batch; Azure; Microsoft; MBatch</PackageTags>
+	<DebugType>embedded</DebugType>
+	<GenerateDocumentationFile>True</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.ResourceManager.Batch" Version="1.5.0" />
+    <PackageReference Include="Microsoft.Azure.Batch" Version="16.3.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.4" />
+    <PackageReference Include="System.Text.Json" Version="9.0.4" />
+  </ItemGroup>
+
+</Project>
