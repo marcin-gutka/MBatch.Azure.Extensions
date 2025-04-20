@@ -6,6 +6,9 @@ using Azure.ResourceManager.Batch.Models;
 
 namespace MBatch.Azure.Extensions
 {
+    /// <summary>
+    /// Static class for extensions method for ArmClient.
+    /// </summary>
     public static partial class ArmClientExtensions
     {
         private const string PACKAGE_FORMAT = "zip";
@@ -15,6 +18,14 @@ namespace MBatch.Azure.Extensions
         /// This method calls <see cref="BatchExtensions.GetBatchApplicationPackageResource(ArmClient, ResourceIdentifier)"/> then
         /// it calls <see cref="BatchApplicationPackageResource.UpdateAsync(WaitUntil, BatchApplicationPackageData, CancellationToken)"/>.
         /// </summary>
+        /// <param name="armClient">ArmClient to connect to Azure resources.</param>
+        /// <param name="subscriptionId">The subscription ID within which the Azure Batch account is located.</param>
+        /// <param name="resourceGroup">The resource group name within which the Azure Batch account is located.</param>
+        /// <param name="batchAccountName">Batch account name.</param>
+        /// <param name="applicationName">Application name.</param>
+        /// <param name="applicationVersion">Application version.</param>
+        /// <param name="waitUntilCompleted">If <see langword="true"/> then the method waits for operation to complete, otherwise it returns when operation has started.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns><see cref="Uri"/> for uploading application package to blob storage configured in Batch Account</returns>
         public static async Task<Uri> UpdateBatchApplicationPackage(this ArmClient armClient,
             string subscriptionId, string resourceGroup, string batchAccountName,
