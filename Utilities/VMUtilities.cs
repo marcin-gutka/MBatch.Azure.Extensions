@@ -1,6 +1,6 @@
 ﻿using Microsoft.Azure.Batch;
 
-namespace MBatch.Utilities
+namespace MBatch.Extensions
 {
     public static class VMUtilities
     {

@@ -1,4 +1,4 @@
-﻿namespace MBatch.Utilities
+﻿namespace MBatch.Extensions
 {
     public static class CommandLineUtilities
     {

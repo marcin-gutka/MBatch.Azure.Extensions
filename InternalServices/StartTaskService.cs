@@ -1,6 +1,6 @@
 ﻿using Azure.ResourceManager.Batch.Models;
 
-namespace MBatch.InternalServices
+namespace MBatch.Extensions.InternalServices
 {
     internal static class StartTaskService
     {

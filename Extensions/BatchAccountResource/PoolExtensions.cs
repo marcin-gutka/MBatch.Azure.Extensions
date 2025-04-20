@@ -3,9 +3,9 @@ using Azure.Core;
 using Azure.ResourceManager.Batch;
 using Azure.ResourceManager.Batch.Models;
 using Azure.ResourceManager.Models;
-using MBatch.InternalExtensions;
-using MBatch.InternalServices;
-using MBatch.Models;
+using MBatch.Extensions.InternalExtensions;
+using MBatch.Extensions.InternalServices;
+using MBatch.Extensions.Models;
 using Microsoft.Azure.Batch;
 
 namespace MBatch.Extensions

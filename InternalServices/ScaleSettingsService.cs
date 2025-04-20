@@ -1,7 +1,7 @@
 ﻿using Azure.ResourceManager.Batch.Models;
-using MBatch.Models;
+using MBatch.Extensions.Models;
 
-namespace MBatch.InternalServices
+namespace MBatch.Extensions.InternalServices
 {
     internal static class ScaleSettingsService
     {

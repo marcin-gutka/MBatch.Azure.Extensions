@@ -1,4 +1,4 @@
-﻿namespace MBatch.Models
+﻿namespace MBatch.Extensions.Models
 {
     public interface IScaleSettings
     {
