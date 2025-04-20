@@ -1,4 +1,5 @@
 ﻿using Azure;
+using Azure.Core;
 using Azure.ResourceManager;
 using Azure.ResourceManager.Batch;
 using Azure.ResourceManager.Batch.Models;
@@ -9,6 +10,12 @@ namespace MBatch.Azure.Extensions
     {
         private const string PACKAGE_FORMAT = "zip";
 
+        /// <summary>
+        /// Creates an application package record. Adds new application if it does not exist or new version to exisitng application.
+        /// This method calls <see cref="BatchExtensions.GetBatchApplicationPackageResource(ArmClient, ResourceIdentifier)"/> then
+        /// it calls <see cref="BatchApplicationPackageResource.UpdateAsync(WaitUntil, BatchApplicationPackageData, CancellationToken)"/>.
+        /// </summary>
+        /// <returns><see cref="Uri"/> for uploading application package to blob storage configured in Batch Account</returns>
         public static async Task<Uri> UpdateBatchApplicationPackage(this ArmClient armClient,
             string subscriptionId, string resourceGroup, string batchAccountName,
             string applicationName, string applicationVersion,
