@@ -39,9 +39,23 @@ namespace MBatch.Azure.Extensions
             var response = await batchApplicationPackage.UpdateAsync(waitUntilCompleted ? WaitUntil.Completed : WaitUntil.Started, data, cancellationToken);
 
             return response.Value.Data.StorageUri;
-        }        
+        }
 
-        public static async Task<bool> ActivateBatchApplicationPackage(this ArmClient armClient,
+        /// <summary>
+        /// Activates created application package.
+        /// Prior calling this method the zip package of your application should be uploaded to provided Uri.
+        /// Call <see cref="ArmClientExtensions.UpdateBatchApplicationPackage(ArmClient, string, string, string, string, string, bool, CancellationToken)"/> to create application package.
+        /// This method calls <see cref="BatchExtensions.GetBatchApplicationPackageResource(ArmClient, ResourceIdentifier)"/> then
+        /// it calls <see cref="BatchApplicationPackageResource.ActivateAsync(BatchApplicationPackageActivateContent, CancellationToken)"/>.
+        /// </summary>
+        /// <param name="armClient">ArmClient to connect to Azure resources.</param>
+        /// <param name="subscriptionId">The subscription ID within which the Azure Batch account is located.</param>
+        /// <param name="resourceGroup">The resource group name within which the Azure Batch account is located.</param>
+        /// <param name="batchAccountName">Batch account name.</param>
+        /// <param name="applicationName">Application name.</param>
+        /// <param name="applicationVersion">Application version.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        public static async Task ActivateBatchApplicationPackage(this ArmClient armClient,
             string subscriptionId, string resourceGroup, string batchAccountName,
             string applicationName, string applicationVersion, CancellationToken cancellationToken = default)
         {
@@ -49,8 +63,6 @@ namespace MBatch.Azure.Extensions
 
             var content = new BatchApplicationPackageActivateContent(PACKAGE_FORMAT);
             await batchApplicationPackage.ActivateAsync(content, cancellationToken);
-
-            return true;
         }
 
         public static async Task<bool> DeleteBatchApplicationPackage(this ArmClient armClient,
