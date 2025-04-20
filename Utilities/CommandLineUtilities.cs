@@ -1,4 +1,4 @@
-﻿namespace MBatch.Extensions
+﻿namespace MBatch.Azure.Extensions
 {
     public static class CommandLineUtilities
     {

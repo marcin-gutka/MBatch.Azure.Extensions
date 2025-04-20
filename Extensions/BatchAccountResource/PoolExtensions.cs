@@ -3,12 +3,12 @@ using Azure.Core;
 using Azure.ResourceManager.Batch;
 using Azure.ResourceManager.Batch.Models;
 using Azure.ResourceManager.Models;
-using MBatch.Extensions.InternalExtensions;
-using MBatch.Extensions.InternalServices;
-using MBatch.Extensions.Models;
+using MBatch.Azure.Extensions.InternalExtensions;
+using MBatch.Azure.Extensions.InternalServices;
+using MBatch.Azure.Extensions.Models;
 using Microsoft.Azure.Batch;
 
-namespace MBatch.Extensions
+namespace MBatch.Azure.Extensions
 {
     public static partial class PoolExtensions
     {

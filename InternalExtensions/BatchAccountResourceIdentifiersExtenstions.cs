@@ -1,7 +1,7 @@
 ﻿using Azure.Core;
 using Azure.ResourceManager.Batch;
 
-namespace MBatch.Extensions.InternalExtensions
+namespace MBatch.Azure.Extensions.InternalExtensions
 {
     internal static class BatchAccountResourceIdentifiersExtenstions
     {

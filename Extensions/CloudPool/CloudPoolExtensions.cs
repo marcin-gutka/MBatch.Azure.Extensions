@@ -2,7 +2,7 @@
 using Microsoft.Azure.Batch.Common;
 using Microsoft.Extensions.Logging;
 
-namespace MBatch.Extensions
+namespace MBatch.Azure.Extensions
 {
     public static class CloudPoolExtensions
     {

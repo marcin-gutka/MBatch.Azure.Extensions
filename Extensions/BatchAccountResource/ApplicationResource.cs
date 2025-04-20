@@ -2,7 +2,7 @@
 using Azure.ResourceManager.Batch;
 using Azure.ResourceManager.Batch.Models;
 
-namespace MBatch.Extensions
+namespace MBatch.Azure.Extensions
 {
     public static partial class BatchAccountResourceExtensions
     {

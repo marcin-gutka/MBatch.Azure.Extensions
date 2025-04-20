@@ -1,7 +1,7 @@
 ﻿using Microsoft.Azure.Batch;
 using Microsoft.Azure.Batch.Common;
 
-namespace MBatch.Extensions
+namespace MBatch.Azure.Extensions
 {
     public static partial class BatchClientExtensions
     {

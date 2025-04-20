@@ -1,4 +1,4 @@
-﻿namespace MBatch.Extensions.Models
+﻿namespace MBatch.Azure.Extensions.Models
 {
     public interface IScaleSettings
     {

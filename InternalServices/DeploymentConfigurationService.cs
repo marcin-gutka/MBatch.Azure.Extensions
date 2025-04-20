@@ -1,6 +1,6 @@
 ﻿using Azure.ResourceManager.Batch.Models;
 
-namespace MBatch.Extensions.InternalServices
+namespace MBatch.Azure.Extensions.InternalServices
 {
     public static class DeploymentConfigurationService
     {

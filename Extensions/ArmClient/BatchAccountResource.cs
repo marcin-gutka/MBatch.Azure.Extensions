@@ -1,7 +1,7 @@
 ﻿using Azure.ResourceManager;
 using Azure.ResourceManager.Batch;
 
-namespace MBatch.Extensions
+namespace MBatch.Azure.Extensions
 {
     public static partial class ArmClientExtensions
     {
