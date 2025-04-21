@@ -6,14 +6,25 @@ namespace MBatch.Azure.Extensions
 {
     public static class CloudPoolExtensions
     {
-        public static async Task SetTargetNodesCountAsync(this CloudPool pool, int targetNodeCount, bool isResizing, ILogger? logger)
+        public static async Task SetTargetNodesCountAsync(this CloudPool pool, int targetNodeCount, ComputeNodeDeallocationOption computeNodeDeallocationOption, ILogger? logger)
         {
-            if (isResizing)
+            await pool.RefreshAsync();
+
+            if (pool.AutoScaleEnabled is not null && pool.AutoScaleEnabled.Value)
+            {
+                logger?.LogWarning("Cannot resize pool: '{PoolId}' as AutoScale is enabled", pool.Id);
                 return;
+            }
+
+            if (pool.AllocationState != AllocationState.Steady)
+            {
+                logger?.LogWarning("Cannot resize pool: '{PoolId}' as its state is not steady", pool.Id);
+                return;
+            }
 
             if (pool.TargetDedicatedComputeNodes < targetNodeCount)
             {
-                await pool.ResizeAsync(targetNodeCount, deallocationOption: ComputeNodeDeallocationOption.TaskCompletion);
+                await pool.ResizeAsync(targetNodeCount, deallocationOption: computeNodeDeallocationOption);
 
                 logger?.LogInformation("New target node count: {TargetNodeCount}, previous: {TargetDedicatedComputeNodes}", targetNodeCount, pool.TargetDedicatedComputeNodes);
             }
@@ -23,7 +34,7 @@ namespace MBatch.Azure.Extensions
             {
                 var nodesToDelete = NodesToDelete(pool, targetNodeCount);
 
-                await pool.RemoveFromPoolAsync(nodesToDelete, deallocationOption: ComputeNodeDeallocationOption.TaskCompletion);
+                await pool.RemoveFromPoolAsync(nodesToDelete, deallocationOption: computeNodeDeallocationOption);
 
                 logger?.LogInformation("New target node count: {TargetNodeCount}, previous: {TargetDedicatedComputeNodes}", targetNodeCount, pool.TargetDedicatedComputeNodes);
             }
@@ -43,7 +54,7 @@ namespace MBatch.Azure.Extensions
             return orderedNodes.Take(nodesCount.Value - targetNodeCount).Select(x => x.Id);
         }
 
-        public static async Task<bool> RecoverUnhealthyNodesAsync(this CloudPool pool, ILogger? logger)
+        public static async Task RecoverUnhealthyNodesAsync(this CloudPool pool, ILogger? logger)
         {
             var unhealthyNodes = pool.ListComputeNodes(new ODATADetailLevel()
             {
@@ -52,9 +63,7 @@ namespace MBatch.Azure.Extensions
 
             var taskList = new List<Task>();
 
-            var isResizing = false;
-
-            logger?.LogInformation("Check unhealthy node for pool'{PoolId}'.", pool.Id);
+            logger?.LogInformation("Checking unhealthy nodes for pool: '{PoolId}'.", pool.Id);
 
             foreach (var node in unhealthyNodes)
             {
@@ -72,7 +81,6 @@ namespace MBatch.Azure.Extensions
                         if (pool.AllocationState != AllocationState.Resizing)
                         {
                             taskList.Add(node.RemoveFromPoolAsync(deallocationOption: ComputeNodeDeallocationOption.Requeue));
-                            isResizing = true;
                             logger?.LogInformation("Node '{NodeId}' had Unkown state in pool '{PoolId}'. Node will be removed.", node.Id, pool.Id);
                         }
                         break;
@@ -83,7 +91,6 @@ namespace MBatch.Azure.Extensions
                 logger?.LogInformation("Found {TaskListCount} unhealthy nodes in pool '{PoolId}'.", taskList.Count, pool.Id);
 
             await Task.WhenAll(taskList);
-            return isResizing;
         }
 
         private static string GetUnhealthyNodesFilter() =>
