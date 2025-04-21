@@ -1,4 +1,5 @@
-﻿using Azure.ResourceManager;
+﻿using Azure.Core;
+using Azure.ResourceManager;
 using Azure.ResourceManager.Batch;
 using Azure.ResourceManager.Batch.Models;
 using Azure.ResourceManager.Resources;
@@ -10,11 +11,26 @@ namespace MBatch.Azure.Extensions
         private const string MEMORY_CAPABILITY_NAME = "MemoryGB";
         private const string VCPUS_CAPABILITY_NAME = "vCPUs";
 
-        // TODO: Provide proper method description
+        /// <summary>
+        /// Gets Virtual Machine Size from available SKUs for subscription and location optionally filtered by family name. If provided skuName matches any supported sku then it is chosen, if not then sku based on hardware requirements is matched if provided.
+        /// First minumum required memory and minimum required vCPUs is matched, then second try is minumum required memory and the lowest possible vCPU and finally minimum required vCPU and the lowest possible memory.
+        /// Any of those 3 optional parameters needs to be provided in order to select any SKU.
+        /// This method calls <see cref="BatchExtensions.GetBatchSupportedVirtualMachineSkus(SubscriptionResource, AzureLocation, int?, string, CancellationToken)"/>.
+        /// </summary>
+        /// <param name="armClient">ArmClient to connect to Azure resources.</param>
+        /// <param name="subscriptionId">The subscription ID within which the Azure Batch account is located.</param>
+        /// <param name="location">The Azure location.</param>
+        /// <param name="skuName">Optional: Desired sku to be chosen.</param>
+        /// <param name="minMemory">Optional: to choose sku within avaialable skus based on minimum memory requirement.</param>
+        /// <param name="minvCPUs">Optional: to choose sku within avaialable skus based on minimum vCPUs requirement.</param>
+        /// <param name="familyName">Optional: to filter available skus within subscription and location.</param>
+        /// <returns><see cref="string"/> of selected SKU name</returns>
+        /// <exception cref="ArgumentException">Thrown when neither skuName nor minMemory nor minvCPUs allowed to choose any SKU.</exception>
         public static string GetVirtualMachineSize(this ArmClient armClient,
-            string subscriptionId, string location,
-            string? skuName = null, string? familyName = null,
-            double? minMemory = null, double? minvCPUs = null)
+            string subscriptionId, AzureLocation location,
+            string? skuName = null,
+            double? minMemory = null, double? minvCPUs = null,
+            string? familyName = null)
         {
             var supportedSkus = GetSupportedSkus(armClient, subscriptionId, location, familyName);
 

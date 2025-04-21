@@ -5,14 +5,23 @@ namespace MBatch.Azure.Extensions
 {
     public static partial class ArmClientExtensions
     {
-        public static BatchAccountResource GetBatchAccountResource(this ArmClient armClient,
+        /// <summary>
+        /// Creates <see cref="BatchAccountResource"/> to interact with Batch Account.
+        /// This method calls <see cref="BatchAccountResource.GetAsync(CancellationToken)"/> to fetch Batch Account data.
+        /// </summary>
+        /// <param name="armClient">ArmClient to connect to Azure resources.</param>
+        /// <param name="subscriptionId">The subscription ID within which the Azure Batch account is located.</param>
+        /// <param name="resourceGroup">The resource group name within which the Azure Batch account is located.</param>
+        /// <param name="batchAccountName">Batch account name.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        public static async Task<BatchAccountResource> GetBatchAccountResource(this ArmClient armClient,
             string subscriptionId, string resourceGroup, string batchAccountName, CancellationToken cancellationToken = default)
         {
             var batchResourceId = BatchAccountResource.CreateResourceIdentifier(subscriptionId, resourceGroup, batchAccountName);
 
             var batchAccountResource = armClient.GetBatchAccountResource(batchResourceId);
 
-            return batchAccountResource.Get(cancellationToken);
+            return await batchAccountResource.GetAsync(cancellationToken);
         }
     }
 }
