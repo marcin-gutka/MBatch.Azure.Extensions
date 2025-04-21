@@ -1,14 +1,30 @@
 ﻿using Microsoft.Azure.Batch;
 using Microsoft.Azure.Batch.Common;
 using Microsoft.Extensions.Logging;
+using System.Threading;
 
 namespace MBatch.Azure.Extensions
 {
+    /// <summary>
+    /// Static class for extensions methods for <see cref="CloudPool"/>.
+    /// </summary>
     public static class CloudPoolExtensions
     {
-        public static async Task SetTargetNodesCountAsync(this CloudPool pool, int targetNodeCount, ComputeNodeDeallocationOption computeNodeDeallocationOption, ILogger? logger)
+        /// <summary>
+        /// Sets number of nodes for pool.
+        /// This method calls following methods: <see cref="CloudPool.RefreshAsync(DetailLevel, IEnumerable{BatchClientBehavior}, CancellationToken)"/>,
+        /// <see cref="CloudPool.ResizeAsync(int?, int?, TimeSpan?, ComputeNodeDeallocationOption?, IEnumerable{BatchClientBehavior}, CancellationToken)"/>,
+        /// <see cref="CloudPool.RemoveFromPool(IEnumerable{ComputeNode}, ComputeNodeDeallocationOption?, TimeSpan?, IEnumerable{BatchClientBehavior})"/>.
+        /// </summary>
+        /// <param name="pool">CloudPool object.</param>
+        /// <param name="targetNodeCount">Number of nodes to set.</param>
+        /// <param name="computeNodeDeallocationOption">Action to be perform on task when a node is removed.</param>
+        /// <param name="logger">Optional: for logging.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <remarks>Low priority nodes are not currently supported by this extension.</remarks>
+        public static async Task SetTargetNodesCountAsync(this CloudPool pool, int targetNodeCount, ComputeNodeDeallocationOption computeNodeDeallocationOption, ILogger? logger, CancellationToken cancellationToken = default)
         {
-            await pool.RefreshAsync();
+            await pool.RefreshAsync(cancellationToken: cancellationToken);
 
             if (pool.AutoScaleEnabled is not null && pool.AutoScaleEnabled.Value)
             {
@@ -26,7 +42,7 @@ namespace MBatch.Azure.Extensions
             {
                 logger?.LogInformation("New target node count: {TargetNodeCount}, previous: {TargetDedicatedComputeNodes} - adding nodes", targetNodeCount, pool.TargetDedicatedComputeNodes);
 
-                await pool.ResizeAsync(targetNodeCount, deallocationOption: computeNodeDeallocationOption);
+                await pool.ResizeAsync(targetNodeCount, deallocationOption: computeNodeDeallocationOption, cancellationToken: cancellationToken);
             }
 
             // use this instead of ResizeAsync when removing nodes to choose exactly which nodes are removed.
@@ -36,11 +52,11 @@ namespace MBatch.Azure.Extensions
 
                 var nodesToDelete = NodesToDelete(pool, targetNodeCount);
 
-                await pool.RemoveFromPoolAsync(nodesToDelete, deallocationOption: computeNodeDeallocationOption);
+                await pool.RemoveFromPoolAsync(nodesToDelete, deallocationOption: computeNodeDeallocationOption, cancellationToken: cancellationToken);
             }
         }
 
-        private static IEnumerable<string> NodesToDelete(CloudPool pool, int targetNodeCount)
+        private static IEnumerable<ComputeNode> NodesToDelete(CloudPool pool, int targetNodeCount)
         {
             var nodes = pool.ListComputeNodes().ToList();
 
@@ -49,13 +65,27 @@ namespace MBatch.Azure.Extensions
             if (nodesCount is null || nodesCount <= targetNodeCount)
                 return [];
 
-            var orderedNodes = nodes.OrderBy(x => x.State, new NodeStateComparer());
+            var orderedNodes = nodes.OrderBy(x => x.State, new NodeStateComparerForRemoving());
 
-            return orderedNodes.Take(nodesCount.Value - targetNodeCount).Select(x => x.Id);
+            return orderedNodes.Take(nodesCount.Value - targetNodeCount);
         }
 
-        public static async Task RecoverUnhealthyNodesAsync(this CloudPool pool, ILogger? logger)
+        /// <summary>
+        /// Recovers unhealty nodes in a pool.
+        /// This method calls following methods: <see cref="CloudPool.RefreshAsync(DetailLevel, IEnumerable{BatchClientBehavior}, CancellationToken)"/>,
+        /// <see cref="CloudPool.ListComputeNodes(DetailLevel, IEnumerable{BatchClientBehavior})"/>,
+        /// <see cref="ComputeNode.EnableSchedulingAsync(IEnumerable{BatchClientBehavior}, CancellationToken)"/>,
+        /// <see cref="ComputeNode.RebootAsync(ComputeNodeRebootOption?, IEnumerable{BatchClientBehavior}, CancellationToken)"/>,
+        /// <see cref="ComputeNode.RemoveFromPoolAsync(ComputeNodeDeallocationOption?, TimeSpan?, IEnumerable{BatchClientBehavior}, CancellationToken)"/>,
+        /// </summary>
+        /// <param name="pool">CloudPool object.</param>
+        /// <param name="logger">Optional: for logging.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <remarks>When removing nodes, the custom comparer is used to determine which nodes are most efficient to be removed.</remarks>
+        public static async Task RecoverUnhealthyNodesAsync(this CloudPool pool, ILogger? logger, CancellationToken cancellationToken = default)
         {
+            await pool.RefreshAsync(cancellationToken: cancellationToken);
+
             var unhealthyNodes = pool.ListComputeNodes(new ODATADetailLevel()
             {
                 FilterClause = GetUnhealthyNodesFilter()
@@ -70,17 +100,17 @@ namespace MBatch.Azure.Extensions
                 switch (node.State)
                 {
                     case ComputeNodeState.Offline:
-                        taskList.Add(node.EnableSchedulingAsync());
+                        taskList.Add(node.EnableSchedulingAsync(cancellationToken: cancellationToken));
                         logger?.LogInformation("Node '{NodeId}' was offline in pool '{PoolId}'. Enabling scheduling was activated.", node.Id, pool.Id);
                         break;
                     case ComputeNodeState.Unusable:
-                        taskList.Add(node.RebootAsync(rebootOption: ComputeNodeRebootOption.Requeue));
+                        taskList.Add(node.RebootAsync(rebootOption: ComputeNodeRebootOption.Requeue, cancellationToken: cancellationToken));
                         logger?.LogInformation("Node '{NodeId}' was unusable in pool '{PoolId}'. Rebooting was triggered.", node.Id, pool.Id);
                         break;
                     case ComputeNodeState.Unknown:
                         if (pool.AllocationState != AllocationState.Resizing)
                         {
-                            taskList.Add(node.RemoveFromPoolAsync(deallocationOption: ComputeNodeDeallocationOption.Requeue));
+                            taskList.Add(node.RemoveFromPoolAsync(deallocationOption: ComputeNodeDeallocationOption.Requeue, cancellationToken: cancellationToken));
                             logger?.LogInformation("Node '{NodeId}' had Unkown state in pool '{PoolId}'. Node will be removed.", node.Id, pool.Id);
                         }
                         break;
@@ -97,7 +127,7 @@ namespace MBatch.Azure.Extensions
             "state eq 'offline' or state eq 'unusable' or state eq 'unknown'";
 
         #region Node State Comparer
-        private class NodeStateComparer : IComparer<ComputeNodeState?>
+        private class NodeStateComparerForRemoving : IComparer<ComputeNodeState?>
         {
             public int Compare(ComputeNodeState? x, ComputeNodeState? y)
             {
@@ -131,6 +161,7 @@ namespace MBatch.Azure.Extensions
                     ComputeNodeState.Starting => 4,
                     ComputeNodeState.Rebooting => 5,
                     ComputeNodeState.Creating => 6,
+                    // any other case is treated in the same way
                     _ => 20
                 };
         }
