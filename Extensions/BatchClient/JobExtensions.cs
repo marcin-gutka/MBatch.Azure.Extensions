@@ -64,7 +64,7 @@ namespace MBatch.Azure.Extensions
             if (job is null)
                 return;
 
-            await job.Update(newJobId, newPoolId, terminateJobAfterTasksCompleted, useTaskDependencies, cancellationToken);
+            await job.UpdateAsync(newJobId, newPoolId, terminateJobAfterTasksCompleted, useTaskDependencies, cancellationToken);
         }        
 
         public static async Task<bool> TerminateJobAsync(this BatchClient batchClient, string jobId, CancellationToken cancellationToken = default)
@@ -74,7 +74,7 @@ namespace MBatch.Azure.Extensions
             if (job is null)
                 return false;
 
-            return await job.TerminateJob(cancellationToken);
+            return await job.TerminateJobAsync(cancellationToken);
         }
 
         public static List<string> GetRunningJobsAsync(this BatchClient batchClient, string poolId)
