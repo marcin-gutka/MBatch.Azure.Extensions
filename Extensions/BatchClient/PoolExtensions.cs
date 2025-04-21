@@ -69,8 +69,8 @@ namespace MBatch.Azure.Extensions
 
             foreach (var node in nodes)
             {
-                if (node.State != ComputeNodeState.Rebooting)
-                    taskList.Add(node.RebootAsync(computeNodeRebootOption));
+                if (node is not null && node.State != ComputeNodeState.Rebooting)
+                    taskList.Add(node.RebootAsync(computeNodeRebootOption, cancellationToken: cancellationToken));
             }
 
             await Task.WhenAll(taskList);
