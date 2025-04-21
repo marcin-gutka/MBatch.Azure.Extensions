@@ -2,9 +2,9 @@
 
 namespace MBatch.Azure.Extensions.InternalServices
 {
-    public static class DeploymentConfigurationService
+    internal static class DeploymentConfigurationService
     {
-        public static BatchDeploymentConfiguration CreateDeploymentConfiguration(string offer, string publisher, string sku, string nodeAgentSkuId) =>
+        internal static BatchDeploymentConfiguration CreateDeploymentConfiguration(string offer, string publisher, string sku, string nodeAgentSkuId) =>
             new()
             {
                 VmConfiguration = new BatchVmConfiguration(imageReference: new BatchImageReference()
