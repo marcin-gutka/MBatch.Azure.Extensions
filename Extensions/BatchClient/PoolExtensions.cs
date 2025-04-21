@@ -47,19 +47,19 @@ namespace MBatch.Azure.Extensions
             await pool.DeleteAsync(cancellationToken: cancellationToken);
         }
 
-        public static async Task RebootNodesAsync(this BatchClient batchClient, string poolId, ComputeNodeRebootOption computeNodeRebootOption)
+        public static async Task RebootNodesAsync(this BatchClient batchClient, string poolId, ComputeNodeRebootOption computeNodeRebootOption, CancellationToken cancellationToken = default)
         {
-            var pool = await batchClient.PoolOperations.GetPoolAsync(poolId);
+            var pool = await batchClient.PoolOperations.GetPoolAsync(poolId, cancellationToken: cancellationToken);
 
-            await batchClient.RebootNodesAsync(pool, computeNodeRebootOption);
+            await batchClient.RebootNodesAsync(pool, computeNodeRebootOption, cancellationToken);
         }
 
-        public static async Task RebootNodesAsync(this BatchClient batchClient, CloudPool pool, ComputeNodeRebootOption computeNodeRebootOption)
+        public static async Task RebootNodesAsync(this BatchClient batchClient, CloudPool pool, ComputeNodeRebootOption computeNodeRebootOption, CancellationToken cancellationToken = default)
         {
             if (pool.AllocationState == AllocationState.Resizing)
             {
-                await pool.StopResizeAsync();
-                await WaitUntilPoolIsSteadyAsync(batchClient, pool.Id);
+                await pool.StopResizeAsync(cancellationToken: cancellationToken);
+                await WaitUntilPoolIsSteadyAsync(batchClient, pool.Id, cancellationToken);
             }
 
             // create service to handle nodes and spot nodes
@@ -76,22 +76,22 @@ namespace MBatch.Azure.Extensions
             await Task.WhenAll(taskList);
         }
 
-        private static async Task WaitUntilPoolIsSteadyAsync(BatchClient batchClient, string poolId)
+        private static async Task WaitUntilPoolIsSteadyAsync(BatchClient batchClient, string poolId, CancellationToken cancellationToken = default)
         {
             var poolState = AllocationState.Resizing;
 
             var iteration = 0;
 
-            while (poolState != AllocationState.Steady)
+            while (!cancellationToken.IsCancellationRequested && poolState != AllocationState.Steady)
             {
                 if (iteration >= TIMEOUT * 60)
                     throw new TimeoutException($"Timeout occurred when stopping resizing for pool: {poolId}.");
 
-                var pool = await batchClient.PoolOperations.GetPoolAsync(poolId);
+                var pool = await batchClient.PoolOperations.GetPoolAsync(poolId, cancellationToken: cancellationToken);
 
                 poolState = pool.AllocationState ?? poolState;
 
-                await Task.Delay(1000);
+                await Task.Delay(1000, cancellationToken);
                 iteration++;
             }
         }
