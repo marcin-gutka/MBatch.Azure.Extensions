@@ -1,5 +1,6 @@
 ﻿using Azure;
 using Azure.Core;
+using Azure.ResourceManager;
 using Azure.ResourceManager.Batch;
 using Azure.ResourceManager.Batch.Models;
 using Azure.ResourceManager.Models;
@@ -13,9 +14,26 @@ namespace MBatch.Azure.Extensions
     public static partial class BatchAccountResourceExtensions
     {
         #region Create
-        public static Task CreatePool(this BatchAccountResource batchAccountResource,
+        /// <summary>
+        /// Creates a pool if not exist in Batch Account.
+        /// This method calls <see cref="BatchAccountPoolCollection.CreateOrUpdateAsync(WaitUntil, string, BatchAccountPoolData, ETag?, string, CancellationToken)"/>.
+        /// </summary>
+        /// <param name="batchAccountResource">BatchAccountResource to connect to Batch Account resource.</param>
+        /// <param name="poolId">Application version.</param>
+        /// <param name="vmConfiguration">Chosen Virtual Machine configuration (see <see cref="VMUtilities.MatchVirtualMachineConfiguration(List{ImageInformation}, string?, string?, string?)"/> to choose within Image Informations.
+        /// To get Image Informations call <see cref="PoolOperations.ListSupportedImages(DetailLevel, IEnumerable{BatchClientBehavior})"/> using <see cref="BatchClient"/>).</param>
+        /// <param name="poolVMSize">Chosen Virtual Machine size (call <see cref="ArmClientExtensions.GetVirtualMachineSize(ArmClient, string, AzureLocation, string, double?, double?, string)"/> to get Virtual Machine size based on chosen SKU or memory/vCPUs).</param>
+        /// <param name="applications">Optional: List of applications to be installed in created pool.</param>
+        /// <param name="identities">Optional: List of identities to be added for the created pool.</param>
+        /// <param name="startTaskModel">Optional: Object representing Start Task for the created pool.</param>
+        /// <param name="scaleSettings">Optional: Object representing Scale settings for the created pool. Currently only Fixed Scale is supported (use <see cref="FixedScaleSettings"/> to provide those settings).</param>
+        /// <param name="waitUntilCompleted">If <see langword="true"/> then the method waits for operation to complete, otherwise it returns when operation has started.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <exception cref="ArgumentException">Thrown when pool already exists.</exception>
+        public static Task CreatePoolAsync(this BatchAccountResource batchAccountResource,
+            string poolId,
             VirtualMachineConfiguration vmConfiguration,
-            string poolId, string poolVMSize,
+            string poolVMSize,
             List<ApplicationPackageReference>? applications,
             List<ManagedIdentityInfo>? identities,
             StartTaskSettings? startTaskModel,
@@ -25,13 +43,35 @@ namespace MBatch.Azure.Extensions
         {
             var batchDeploymentConfiguration = DeploymentConfigurationService.CreateDeploymentConfiguration(vmConfiguration.ImageReference.Offer, vmConfiguration.ImageReference.Publisher, vmConfiguration.ImageReference.Sku, vmConfiguration.NodeAgentSkuId);
 
-            return batchAccountResource.CreatePool(batchDeploymentConfiguration,
-                poolId, poolVMSize, applications, identities, startTaskModel, scaleSettings, waitUntilCompleted, cancellationToken);
+            return batchAccountResource.CreatePoolAsync(poolId,
+                batchDeploymentConfiguration, poolVMSize,
+                applications, identities, startTaskModel, scaleSettings,
+                waitUntilCompleted,
+                cancellationToken);
         }
 
-        public static Task CreatePool(this BatchAccountResource batchAccountResource,
+        /// <summary>
+        /// Creates a pool if not exist in Batch Account.
+        /// This method calls <see cref="BatchAccountPoolCollection.CreateOrUpdateAsync(WaitUntil, string, BatchAccountPoolData, ETag?, string, CancellationToken)"/>.
+        /// </summary>
+        /// <param name="batchAccountResource">BatchAccountResource to connect to Batch Account resource.</param>
+        /// <param name="poolId">Application version.</param>
+        /// <param name="vmOffer">Virtual Machine offer.</param>
+        /// <param name="vmPublisher">Virtual Machine publisher.</param>
+        /// <param name="vmSku">Virtual Machine SKU.</param>
+        /// <param name="vmNodeAgentSkuId">Virtual Machine node agent SKU Id.</param>
+        /// <param name="poolVMSize">Chosen Virtual Machine size (call <see cref="ArmClientExtensions.GetVirtualMachineSize(ArmClient, string, AzureLocation, string, double?, double?, string)"/> to get Virtual Machine size based on chosen SKU or memory/vCPUs).</param>
+        /// <param name="applications">Optional: List of applications to be installed in created pool.</param>
+        /// <param name="identities">Optional: List of identities to be added for the created pool.</param>
+        /// <param name="startTaskModel">Optional: Object representing Start Task for the created pool.</param>
+        /// <param name="scaleSettings">Optional: Object representing Scale settings for the created pool. Currently only Fixed Scale is supported (use <see cref="FixedScaleSettings"/> to provide those settings).</param>
+        /// <param name="waitUntilCompleted">If <see langword="true"/> then the method waits for operation to complete, otherwise it returns when operation has started.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <exception cref="ArgumentException">Thrown when pool already exists.</exception>
+        public static Task CreatePoolAsync(this BatchAccountResource batchAccountResource,
+            string poolId,
             string vmOffer, string vmPublisher, string vmSku, string vmNodeAgentSkuId,
-            string poolId, string poolVMSize,
+            string poolVMSize,
             List<ApplicationPackageReference>? applications,
             List<ManagedIdentityInfo>? identities,
             StartTaskSettings? startTaskModel,
@@ -41,13 +81,32 @@ namespace MBatch.Azure.Extensions
         {
             var batchDeploymentConfiguration = DeploymentConfigurationService.CreateDeploymentConfiguration(vmOffer, vmPublisher, vmSku, vmNodeAgentSkuId);
 
-            return batchAccountResource.CreatePool(batchDeploymentConfiguration,
-               poolId, poolVMSize, applications, identities, startTaskModel, scaleSettings, waitUntilCompleted, cancellationToken);
+            return batchAccountResource.CreatePoolAsync(poolId,
+                batchDeploymentConfiguration, poolVMSize,
+                applications, identities, startTaskModel, scaleSettings,
+                waitUntilCompleted,
+                cancellationToken);
         }
 
-        public static async Task CreatePool(this BatchAccountResource batchAccountResource,
+        /// <summary>
+        /// Creates a pool if not exist in Batch Account.
+        /// This method calls <see cref="BatchAccountPoolCollection.CreateOrUpdateAsync(WaitUntil, string, BatchAccountPoolData, ETag?, string, CancellationToken)"/>.
+        /// </summary>
+        /// <param name="batchAccountResource">BatchAccountResource to connect to Batch Account resource.</param>
+        /// <param name="poolId">Application version.</param>
+        /// <param name="vmConfiguration">Chosen Virtual Machine configuration.</param>
+        /// <param name="poolVMSize">Chosen Virtual Machine size (call <see cref="ArmClientExtensions.GetVirtualMachineSize(ArmClient, string, AzureLocation, string, double?, double?, string)"/> to get Virtual Machine size based on chosen SKU or memory/vCPUs).</param>
+        /// <param name="applications">Optional: List of applications to be installed in created pool.</param>
+        /// <param name="identities">Optional: List of identities to be added for the created pool.</param>
+        /// <param name="startTaskModel">Optional: Object representing Start Task for the created pool.</param>
+        /// <param name="scaleSettings">Optional: Object representing Scale settings for the created pool. Currently only Fixed Scale is supported (use <see cref="FixedScaleSettings"/> to provide those settings).</param>
+        /// <param name="waitUntilCompleted">If <see langword="true"/> then the method waits for operation to complete, otherwise it returns when operation has started.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <exception cref="ArgumentException">Thrown when pool already exists.</exception>
+        public static async Task CreatePoolAsync(this BatchAccountResource batchAccountResource,
+            string poolId,
             BatchDeploymentConfiguration vmConfiguration,
-            string poolId, string poolVMSize,
+            string poolVMSize,
             List<ApplicationPackageReference>? applications,
             List<ManagedIdentityInfo>? identities,
             StartTaskSettings? startTaskModel,
@@ -55,6 +114,9 @@ namespace MBatch.Azure.Extensions
             bool waitUntilCompleted,
             CancellationToken cancellationToken = default)
         {
+            if (GetPoolAsync(batchAccountResource, poolId, cancellationToken) is not null)
+                throw new ArgumentException($"Pool: '{poolId}' already exists.");
+
             var batchAccountPoolData = new BatchAccountPoolData()
             {
                 DisplayName = poolId,
@@ -106,14 +168,40 @@ namespace MBatch.Azure.Extensions
         #endregion
         #endregion               
 
-        public static async Task DeletePool(this BatchAccountResource batchAccountResource,
+        /// <summary>
+        /// Delets existing pool in Batch Account.
+        /// This method calls <see cref="BatchAccountResource.GetBatchAccountPoolAsync(string, CancellationToken)"/> then
+        /// it calls <see cref="BatchAccountPoolResource.DeleteAsync(WaitUntil, CancellationToken)"/>.
+        /// </summary>
+        /// <param name="batchAccountResource">BatchAccountResource to connect to Batch Account resource.</param>
+        /// <param name="poolId">Application version.</param>
+        /// <param name="waitUntilCompleted">If <see langword="true"/> then the method waits for operation to complete, otherwise it returns when operation has started.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <exception cref="ArgumentException">Thrown when pool is not found.</exception>
+        public static async Task DeletePoolAsync(this BatchAccountResource batchAccountResource,
             string poolId, bool waitUntilCompleted, CancellationToken cancellationToken = default)
         {
-            var pool = await GetPool(batchAccountResource, poolId, cancellationToken);
+            var pool = await GetPoolAsync(batchAccountResource, poolId, cancellationToken);
+
+            if (pool is null)
+                throw new ArgumentException($"Pool: '{poolId}' has not been found.");
 
             await pool.DeleteAsync(waitUntilCompleted ? WaitUntil.Completed : WaitUntil.Started, cancellationToken);
         }
 
+        /// <summary>
+        /// Updates existing pool in Batch Account.
+        /// This method calls <see cref="BatchAccountResource.GetBatchAccountPoolAsync(string, CancellationToken)"/> then
+        /// it calls <see cref="BatchAccountPoolResource.UpdateAsync(BatchAccountPoolData, ETag?, CancellationToken)"/>.
+        /// </summary>
+        /// <param name="batchAccountResource">BatchAccountResource to connect to Batch Account resource.</param>
+        /// <param name="poolId">Application version.</param>
+        /// <param name="applications">Optional: List of applications to be installed in created pool.</param>
+        /// <param name="identities">Optional: List of identities to be added for the created pool.</param>
+        /// <param name="startTaskModel">Optional: Object representing Start Task for the created pool.</param>
+        /// <param name="scaleSettings">Optional: Object representing Scale settings for the created pool. Currently only Fixed Scale is supported (use <see cref="FixedScaleSettings"/> to provide those settings).</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <exception cref="ArgumentException">Thrown when pool is not found.</exception>
         public static async Task UpdatePool(this BatchAccountResource batchAccountResource,
             string poolId,
             List<ApplicationPackageReference>? applications,
@@ -122,7 +210,10 @@ namespace MBatch.Azure.Extensions
             IScaleSettings? scaleSettings,
             CancellationToken cancellationToken = default)
         {
-            var pool = await GetPool(batchAccountResource, poolId, cancellationToken);
+            var pool = await GetPoolAsync(batchAccountResource, poolId, cancellationToken);
+
+            if (pool is null)
+                throw new ArgumentException($"Pool: '{poolId}' has not been found.");
 
             var batchAccountPoolData = new BatchAccountPoolData()
             {
@@ -146,8 +237,7 @@ namespace MBatch.Azure.Extensions
             await pool.UpdateAsync(batchAccountPoolData, cancellationToken: cancellationToken);
         }
 
-        private static async Task<BatchAccountPoolResource> GetPool(BatchAccountResource batchAccountResource, string poolId, CancellationToken cancellationToken = default) =>
-            await batchAccountResource.GetBatchAccountPoolAsync(poolId, cancellationToken) ??
-                throw new ArgumentException($"Pool: '{poolId}' has not been found.");
+        private static async Task<BatchAccountPoolResource> GetPoolAsync(BatchAccountResource batchAccountResource, string poolId, CancellationToken cancellationToken = default) =>
+            await batchAccountResource.GetBatchAccountPoolAsync(poolId, cancellationToken);
     }
 }
