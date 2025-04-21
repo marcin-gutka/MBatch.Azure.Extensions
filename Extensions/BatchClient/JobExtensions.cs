@@ -74,17 +74,19 @@ namespace MBatch.Azure.Extensions
         /// <param name="batchClient">BatchClient to connect to Batch Account.</param>
         /// <param name="jobId">Job Id.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns><see langword="true"/> when a job is deleted, otherwise <see langword="false"/>.</returns>
         /// <exception cref="BatchException">Passing through except when a job is not found.</exception>
-        public static async Task DeleteJoAsyncb(this BatchClient batchClient, string jobId, CancellationToken cancellationToken = default)
+        public static async Task<bool> DeleteJobIfExistsAsync(this BatchClient batchClient, string jobId, CancellationToken cancellationToken = default)
         {
             try
             {
                 await batchClient.JobOperations.DeleteJobAsync(jobId, cancellationToken: cancellationToken);
+                return true;
             }
             catch (BatchException e)
             {
                 if (e.RequestInformation?.BatchError?.Code == BatchErrorCodeStrings.JobNotFound)
-                    return;
+                    return false;
 
                 throw;
             }
