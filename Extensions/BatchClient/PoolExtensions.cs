@@ -7,7 +7,7 @@ namespace MBatch.Azure.Extensions
     {
         private const int TIMEOUT = 5; // 5 min
 
-        public static async Task<bool> DoesPoolExist(this BatchClient batchClient, string poolId, CancellationToken cancellationToken = default)
+        public static async Task<bool> DoesPoolExistAsync(this BatchClient batchClient, string poolId, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -24,7 +24,7 @@ namespace MBatch.Azure.Extensions
             return true;
         }
 
-        public static IEnumerable<CloudJob?> GetPoolJobs(this BatchClient batchClient, string poolId)
+        public static IEnumerable<CloudJob?> GetPoolJobsAsync(this BatchClient batchClient, string poolId)
         {
             if (string.IsNullOrEmpty(poolId))
                 throw new ArgumentNullException(nameof(poolId));
@@ -40,26 +40,26 @@ namespace MBatch.Azure.Extensions
             }
         }
 
-        public static async Task DeletePool(this BatchClient batchClient, string poolId, CancellationToken cancellationToken = default)
+        public static async Task DeletePoolAsync(this BatchClient batchClient, string poolId, CancellationToken cancellationToken = default)
         {
             var pool = await batchClient.PoolOperations.GetPoolAsync(poolId, cancellationToken: cancellationToken);
 
             await pool.DeleteAsync(cancellationToken: cancellationToken);
         }
 
-        public static async Task RebootNodes(this BatchClient batchClient, string poolId, ComputeNodeRebootOption computeNodeRebootOption)
+        public static async Task RebootNodesAsync(this BatchClient batchClient, string poolId, ComputeNodeRebootOption computeNodeRebootOption)
         {
             var pool = await batchClient.PoolOperations.GetPoolAsync(poolId);
 
-            await batchClient.RebootNodes(pool, computeNodeRebootOption);
+            await batchClient.RebootNodesAsync(pool, computeNodeRebootOption);
         }
 
-        public static async Task RebootNodes(this BatchClient batchClient, CloudPool pool, ComputeNodeRebootOption computeNodeRebootOption)
+        public static async Task RebootNodesAsync(this BatchClient batchClient, CloudPool pool, ComputeNodeRebootOption computeNodeRebootOption)
         {
             if (pool.AllocationState == AllocationState.Resizing)
             {
                 await pool.StopResizeAsync();
-                await WaitUntilPoolIsSteady(batchClient, pool.Id);
+                await WaitUntilPoolIsSteadyAsync(batchClient, pool.Id);
             }
 
             // create service to handle nodes and spot nodes
@@ -76,7 +76,7 @@ namespace MBatch.Azure.Extensions
             await Task.WhenAll(taskList);
         }
 
-        private static async Task WaitUntilPoolIsSteady(BatchClient batchClient, string poolId)
+        private static async Task WaitUntilPoolIsSteadyAsync(BatchClient batchClient, string poolId)
         {
             var poolState = AllocationState.Resizing;
 

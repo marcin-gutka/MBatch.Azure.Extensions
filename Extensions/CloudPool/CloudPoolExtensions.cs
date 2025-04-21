@@ -6,7 +6,7 @@ namespace MBatch.Azure.Extensions
 {
     public static class CloudPoolExtensions
     {
-        public static async Task SetTargetNodesCount(this CloudPool pool, int targetNodeCount, bool isResizing, ILogger? logger)
+        public static async Task SetTargetNodesCountAsync(this CloudPool pool, int targetNodeCount, bool isResizing, ILogger? logger)
         {
             if (isResizing)
                 return;
@@ -43,7 +43,7 @@ namespace MBatch.Azure.Extensions
             return orderedNodes.Take(nodesCount.Value - targetNodeCount).Select(x => x.Id);
         }
 
-        public static async Task<bool> RecoverUnhealthyNodes(this CloudPool pool, ILogger? logger)
+        public static async Task<bool> RecoverUnhealthyNodesAsync(this CloudPool pool, ILogger? logger)
         {
             var unhealthyNodes = pool.ListComputeNodes(new ODATADetailLevel()
             {

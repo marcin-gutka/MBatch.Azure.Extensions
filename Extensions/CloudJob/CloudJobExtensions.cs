@@ -5,7 +5,7 @@ namespace MBatch.Azure.Extensions
 {
     public static class CloudJobExtensions
     {
-        public static async Task Update(this CloudJob job, string? newJobId = null, string? newPoolId = null, bool? terminateJobAfterTasksCompleted = null, bool? useTaskDependencies = null, CancellationToken cancellationToken = default)
+        public static async Task UpdateAsync(this CloudJob job, string? newJobId = null, string? newPoolId = null, bool? terminateJobAfterTasksCompleted = null, bool? useTaskDependencies = null, CancellationToken cancellationToken = default)
         {
             var update = false;
 
@@ -51,7 +51,7 @@ namespace MBatch.Azure.Extensions
                 await job.CommitChangesAsync(cancellationToken: cancellationToken);
         }
 
-        public static async Task<bool> TerminateJob(this CloudJob job, CancellationToken cancellationToken = default)
+        public static async Task<bool> TerminateJobAsync(this CloudJob job, CancellationToken cancellationToken = default)
         {
             // check their statuses in Batch service
             var state = job.State;

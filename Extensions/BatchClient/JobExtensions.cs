@@ -5,7 +5,7 @@ namespace MBatch.Azure.Extensions
 {
     public static partial class BatchClientExtensions
     {
-        public static async Task<CloudJob?> GetJob(this BatchClient batchClient, string jobId, CancellationToken cancellationToken = default)
+        public static async Task<CloudJob?> GetJobAsync(this BatchClient batchClient, string jobId, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -20,7 +20,7 @@ namespace MBatch.Azure.Extensions
             }
         }
 
-        public static async Task<bool> CreateJob(this BatchClient batchClient, string poolId, string jobId, bool terminateJobAfterTasksCompleted = false, bool useTaskDependencies = false, CancellationToken cancellationToken = default)
+        public static async Task<bool> CreateJobAsync(this BatchClient batchClient, string poolId, string jobId, bool terminateJobAfterTasksCompleted = false, bool useTaskDependencies = false, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -42,7 +42,7 @@ namespace MBatch.Azure.Extensions
             }
         }
 
-        public static async Task DeleteJob(this BatchClient batchClient, string jobId, CancellationToken cancellationToken = default)
+        public static async Task DeleteJoAsyncb(this BatchClient batchClient, string jobId, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -57,9 +57,9 @@ namespace MBatch.Azure.Extensions
             }
         }
 
-        public static async Task UpdateJob(this BatchClient batchClient, string jobId, string? newJobId = null, string? newPoolId = null, bool? terminateJobAfterTasksCompleted = null, bool? useTaskDependencies = null, CancellationToken cancellationToken = default)
+        public static async Task UpdateJobAsync(this BatchClient batchClient, string jobId, string? newJobId = null, string? newPoolId = null, bool? terminateJobAfterTasksCompleted = null, bool? useTaskDependencies = null, CancellationToken cancellationToken = default)
         {
-            var job = await GetJob(batchClient, jobId, cancellationToken);
+            var job = await GetJobAsync(batchClient, jobId, cancellationToken);
 
             if (job is null)
                 return;
@@ -67,9 +67,9 @@ namespace MBatch.Azure.Extensions
             await job.Update(newJobId, newPoolId, terminateJobAfterTasksCompleted, useTaskDependencies, cancellationToken);
         }        
 
-        public static async Task<bool> TerminateJob(this BatchClient batchClient, string jobId, CancellationToken cancellationToken = default)
+        public static async Task<bool> TerminateJobAsync(this BatchClient batchClient, string jobId, CancellationToken cancellationToken = default)
         {
-            var job = await GetJob(batchClient, jobId, cancellationToken);
+            var job = await GetJobAsync(batchClient, jobId, cancellationToken);
 
             if (job is null)
                 return false;
@@ -77,7 +77,7 @@ namespace MBatch.Azure.Extensions
             return await job.TerminateJob(cancellationToken);
         }
 
-        public static List<string> GetRunningJobs(this BatchClient batchClient, string poolId)
+        public static List<string> GetRunningJobsAsync(this BatchClient batchClient, string poolId)
         {
             var jobs = batchClient.JobOperations.ListJobs();
 
@@ -100,11 +100,11 @@ namespace MBatch.Azure.Extensions
             return jobsIds;
         }
 
-        public static async Task<bool> IsAnyTaskFailed(this BatchClient batchClient, string jobId, CancellationToken cancellationToken = default)
+        public static async Task<bool> IsAnyTaskFailedAsync(this BatchClient batchClient, string jobId, CancellationToken cancellationToken = default)
         {
             try
             {
-                var job = await GetJob(batchClient, jobId, cancellationToken) ??
+                var job = await GetJobAsync(batchClient, jobId, cancellationToken) ??
                     throw new ArgumentException("Job: '{JobId}' not found", jobId);
 
                 return job.IsAnyTaskFailed();
@@ -118,7 +118,7 @@ namespace MBatch.Azure.Extensions
             }
         }
 
-        public static async Task<TaskCountsResult[]> GetJobsTasksCount(this BatchClient batchClient, IEnumerable<string> jobsIds, CancellationToken cancellationToken = default)
+        public static async Task<TaskCountsResult[]> GetJobsTasksCountsAsync(this BatchClient batchClient, IEnumerable<string> jobsIds, CancellationToken cancellationToken = default)
         {
             var taskList = new List<Task<TaskCountsResult>>();
 

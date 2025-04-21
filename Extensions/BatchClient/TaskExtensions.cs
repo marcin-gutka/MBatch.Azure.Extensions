@@ -5,7 +5,7 @@ namespace MBatch.Azure.Extensions
 {
     public static partial class BatchClientExtensions
     {
-        public static async Task<CloudTask?> GetTask(this BatchClient batchClient, string jobId, string taskId, CancellationToken cancellationToken = default)
+        public static async Task<CloudTask?> GetTaskAsync(this BatchClient batchClient, string jobId, string taskId, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -20,7 +20,7 @@ namespace MBatch.Azure.Extensions
             }
         }
 
-        public static async Task<bool> CommitTask(this BatchClient batchClient, string jobId, CloudTask task, bool setTerminateJob, CancellationToken cancellationToken = default)
+        public static async Task<bool> CommitTaskAsync(this BatchClient batchClient, string jobId, CloudTask task, bool setTerminateJob, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -62,7 +62,7 @@ namespace MBatch.Azure.Extensions
             }
         }
 
-        public static async Task<bool> DeleteTask(this BatchClient batchClient, string jobId, string taskId, CancellationToken cancellationToken = default)
+        public static async Task<bool> DeleteTaskAsync(this BatchClient batchClient, string jobId, string taskId, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -78,9 +78,9 @@ namespace MBatch.Azure.Extensions
             }
         }
 
-        public static async Task UpdateTask(this BatchClient batchClient, string jobId, string taskId, string? commandLine, IList<EnvironmentSetting>? environmentSettings = null, List<string>? dependsOnTaskIds = null, CancellationToken cancellationToken = default)
+        public static async Task UpdateTaskAsync(this BatchClient batchClient, string jobId, string taskId, string? commandLine, IList<EnvironmentSetting>? environmentSettings = null, List<string>? dependsOnTaskIds = null, CancellationToken cancellationToken = default)
         {
-            var task = await GetTask(batchClient, jobId, taskId, cancellationToken);
+            var task = await GetTaskAsync(batchClient, jobId, taskId, cancellationToken);
 
             if (task is null)
                 return;
@@ -128,7 +128,7 @@ namespace MBatch.Azure.Extensions
 
         private static async Task SetJobTerminationAsync(BatchClient batchClient, string jobId, CancellationToken cancellationToken = default)
         {
-            await batchClient.UpdateJob(jobId, terminateJobAfterTasksCompleted: true, cancellationToken: cancellationToken);
+            await batchClient.UpdateJobAsync(jobId, terminateJobAfterTasksCompleted: true, cancellationToken: cancellationToken);
         }
 
         private static async Task RevertAddedTasksAsync(BatchClient batchClient, string jobId, List<CloudTask> tasks)
@@ -137,7 +137,7 @@ namespace MBatch.Azure.Extensions
 
             foreach (var task in tasks)
             {
-                taskList.Add(DeleteTask(batchClient, jobId, task.Id));
+                taskList.Add(DeleteTaskAsync(batchClient, jobId, task.Id));
             }
 
             await Task.WhenAll(taskList);
