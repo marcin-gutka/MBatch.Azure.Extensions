@@ -182,7 +182,7 @@ namespace MBatch.Azure.Extensions
             var job = await GetJobAsync(batchClient, jobId, cancellationToken) ??
                     throw new ArgumentException("Job: '{JobId}' not found", jobId);
 
-            return job.IsAnyTaskFailed();
+            return await job.IsAnyTaskFailedAsync(cancellationToken);
         }
 
         /// <summary>
