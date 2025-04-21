@@ -24,19 +24,19 @@ namespace MBatch.Azure.Extensions
 
             if (pool.TargetDedicatedComputeNodes < targetNodeCount)
             {
-                await pool.ResizeAsync(targetNodeCount, deallocationOption: computeNodeDeallocationOption);
+                logger?.LogInformation("New target node count: {TargetNodeCount}, previous: {TargetDedicatedComputeNodes} - adding nodes", targetNodeCount, pool.TargetDedicatedComputeNodes);
 
-                logger?.LogInformation("New target node count: {TargetNodeCount}, previous: {TargetDedicatedComputeNodes}", targetNodeCount, pool.TargetDedicatedComputeNodes);
+                await pool.ResizeAsync(targetNodeCount, deallocationOption: computeNodeDeallocationOption);
             }
 
             // use this instead of ResizeAsync when removing nodes to choose exactly which nodes are removed.
             if (pool.TargetDedicatedComputeNodes > targetNodeCount)
             {
+                logger?.LogInformation("New target node count: {TargetNodeCount}, previous: {TargetDedicatedComputeNodes} - removing nodes", targetNodeCount, pool.TargetDedicatedComputeNodes);
+
                 var nodesToDelete = NodesToDelete(pool, targetNodeCount);
 
                 await pool.RemoveFromPoolAsync(nodesToDelete, deallocationOption: computeNodeDeallocationOption);
-
-                logger?.LogInformation("New target node count: {TargetNodeCount}, previous: {TargetDedicatedComputeNodes}", targetNodeCount, pool.TargetDedicatedComputeNodes);
             }
         }
 
