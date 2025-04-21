@@ -24,7 +24,7 @@ namespace MBatch.Azure.Extensions
             return true;
         }
 
-        public static IEnumerable<CloudJob?> GetPoolJobsAsync(this BatchClient batchClient, string poolId)
+        public static IEnumerable<CloudJob?> GetPoolJobs(this BatchClient batchClient, string poolId)
         {
             if (string.IsNullOrEmpty(poolId))
                 throw new ArgumentNullException(nameof(poolId));
