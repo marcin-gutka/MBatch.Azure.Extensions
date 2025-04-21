@@ -10,7 +10,7 @@ using Microsoft.Azure.Batch;
 
 namespace MBatch.Azure.Extensions
 {
-    public static partial class PoolExtensions
+    public static partial class BatchAccountResourceExtensions
     {
         #region Create
         public static Task CreatePool(this BatchAccountResource batchAccountResource,

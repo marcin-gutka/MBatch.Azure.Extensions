@@ -7,7 +7,7 @@ using Azure.ResourceManager.Batch.Models;
 namespace MBatch.Azure.Extensions
 {
     /// <summary>
-    /// Static class for extensions method for ArmClient.
+    /// Static class for extensions methods for <see cref="ArmClient"/>.
     /// </summary>
     public static partial class ArmClientExtensions
     {
@@ -27,7 +27,7 @@ namespace MBatch.Azure.Extensions
         /// <param name="waitUntilCompleted">If <see langword="true"/> then the method waits for operation to complete, otherwise it returns when operation has started.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns><see cref="Uri"/> for uploading application package to blob storage configured in Batch Account</returns>
-        public static async Task<Uri> UpdateBatchApplicationPackage(this ArmClient armClient,
+        public static async Task<Uri> UpdateBatchApplicationPackageAsync(this ArmClient armClient,
             string subscriptionId, string resourceGroup, string batchAccountName,
             string applicationName, string applicationVersion,
             bool waitUntilCompleted = false, CancellationToken cancellationToken = default)
@@ -44,7 +44,7 @@ namespace MBatch.Azure.Extensions
         /// <summary>
         /// Activates created application package (application version).
         /// Prior calling this method the zip package of your application should be uploaded to provided Uri.
-        /// Call <see cref="ArmClientExtensions.UpdateBatchApplicationPackage(ArmClient, string, string, string, string, string, bool, CancellationToken)"/> to create application package.
+        /// Call <see cref="ArmClientExtensions.UpdateBatchApplicationPackageAsync(ArmClient, string, string, string, string, string, bool, CancellationToken)"/> to create application package.
         /// This method calls <see cref="BatchExtensions.GetBatchApplicationPackageResource(ArmClient, ResourceIdentifier)"/> then
         /// it calls <see cref="BatchApplicationPackageResource.ActivateAsync(BatchApplicationPackageActivateContent, CancellationToken)"/>.
         /// </summary>
@@ -55,7 +55,7 @@ namespace MBatch.Azure.Extensions
         /// <param name="applicationName">Application name.</param>
         /// <param name="applicationVersion">Application version.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
-        public static async Task ActivateBatchApplicationPackage(this ArmClient armClient,
+        public static async Task ActivateBatchApplicationPackageAsync(this ArmClient armClient,
             string subscriptionId, string resourceGroup, string batchAccountName,
             string applicationName, string applicationVersion, CancellationToken cancellationToken = default)
         {
@@ -78,7 +78,7 @@ namespace MBatch.Azure.Extensions
         /// <param name="applicationVersion">Application version.</param>
         /// <param name="waitUntilCompleted">If <see langword="true"/> then the method waits for operation to complete, otherwise it returns when operation has started.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
-        public static async Task DeleteBatchApplicationPackage(this ArmClient armClient,
+        public static async Task DeleteBatchApplicationPackageAsync(this ArmClient armClient,
             string subscriptionId, string resourceGroup, string batchAccountName,
             string applicationName, string applicationVersion, bool waitUntilCompleted = false, CancellationToken cancellationToken = default)
         {
@@ -100,7 +100,7 @@ namespace MBatch.Azure.Extensions
         /// <param name="applicationName">Application name.</param>
         /// <param name="waitUntilCompleted">If <see langword="true"/> then the method waits for operation to complete, otherwise it returns when operation has started.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
-        public static async Task DeleteBatchApplication(this ArmClient armClient,
+        public static async Task DeleteBatchApplicationAsync(this ArmClient armClient,
             string subscriptionId, string resourceGroup, string batchAccountName,
             string applicationName, bool waitUntilCompleted, CancellationToken cancellationToken = default)
         {
@@ -111,7 +111,7 @@ namespace MBatch.Azure.Extensions
             var taskList = new List<Task>();
 
             foreach (var package in packageCollection)
-                taskList.Add(DeleteBatchApplicationPackage(armClient, subscriptionId, resourceGroup, batchAccountName, applicationName, package.Data.Name, true, cancellationToken));
+                taskList.Add(DeleteBatchApplicationPackageAsync(armClient, subscriptionId, resourceGroup, batchAccountName, applicationName, package.Data.Name, true, cancellationToken));
 
             await Task.WhenAll(taskList);
 

@@ -14,7 +14,7 @@ namespace MBatch.Azure.Extensions
         /// <param name="resourceGroup">The resource group name within which the Azure Batch account is located.</param>
         /// <param name="batchAccountName">Batch account name.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
-        public static async Task<BatchAccountResource> GetBatchAccountResource(this ArmClient armClient,
+        public static async Task<BatchAccountResource> GetBatchAccountResourceAsync(this ArmClient armClient,
             string subscriptionId, string resourceGroup, string batchAccountName, CancellationToken cancellationToken = default)
         {
             var batchResourceId = BatchAccountResource.CreateResourceIdentifier(subscriptionId, resourceGroup, batchAccountName);
