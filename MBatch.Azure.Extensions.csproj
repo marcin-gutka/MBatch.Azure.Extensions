@@ -5,7 +5,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+	<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+	<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
 	<EnablePackageValidation>true</EnablePackageValidation>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Title>MBatch</Title>
