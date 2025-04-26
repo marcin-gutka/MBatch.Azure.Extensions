@@ -5,6 +5,7 @@ This is a nuget package for extending ArmClient and BatchClient objects by exten
 * [ArmClientExtensions](#arm-client-extensions)
 * [BatchAccountResourceExtensions](#batch-account-resource-extensions)
 * [BatchClientExtensions](#batch-client-extensions)
+* [CloudJobExtensions](#cloud-job-extensions)
 
 <a name="arm-client-extensions"></a>
 # ArmClientExtensions
@@ -518,6 +519,7 @@ await batchAccountResource.UpdatePool(
 # BatchClientExtensions
 * [Job](#batch-client-job)
 * [Pool](#batch-client-pool)
+* [Task](#batch-client-task)
 ---
 
 <a name="batch-client-job"></a>
@@ -849,8 +851,7 @@ Reboots nodes within a pool in a Batch Account.
 ```csharp
 await batchClient.RebootNodesAsync(
     poolId: "MyPool",
-    computeNodeRebootOption: ComputeNodeRebootOption.Requeue,
-    cancellationToken: CancellationToken.None
+    computeNodeRebootOption: ComputeNodeRebootOption.Requeue
 );
 ```
 ---
@@ -879,8 +880,231 @@ Reboots nodes within a pool in a Batch Account.
 ```csharp
 await batchClient.RebootNodesAsync(
     pool: myPool,
-    computeNodeRebootOption: ComputeNodeRebootOption.Requeue,
+    computeNodeRebootOption: ComputeNodeRebootOption.Requeue
+);
+```
+---
+
+<a name="batch-client-task"></a>
+## Task
+* [GetTaskAsync](#batch-client-task-get-async)
+* [CommitTaskAsync](#batch-client-task-commit-task-async)
+* [CommitTasksAsync](#batch-client-task-commit-tasks-async)
+* [DeleteTaskAsync](#batch-client-task-delete-task-async)
+* [UpdateTaskAsync](#batch-client-task-update-task-async)
+---
+
+<a name="batch-client-task-get-async"></a>
+### `GetTaskAsync(BatchClient batchClient, string jobId, string taskId, CancellationToken cancellationToken = default)`
+
+Gets a task from a job in a Batch Account.
+
+#### Parameters:
+- **`BatchClient batchClient`**: The `BatchClient` to connect to the Batch Account.
+- **`string jobId`**: Job identifier.
+- **`string taskId`**: Task identifier.
+- **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
+
+#### Returns:
+**`CloudTask`**: when task is found, otherwise: `null`.
+
+#### Exceptions:
+- **`BatchException`**: Passed through, except when the task is not found.
+
+#### Example:
+```csharp
+CloudTask? task = await batchClient.GetTaskAsync(
+    jobId: "Job-123",
+    taskId: "Task-456"
+);
+```
+---
+
+<a name="batch-client-task-commit-task-async"></a>
+### `CommitTaskAsync(BatchClient batchClient, string jobId, CloudTask task, bool setTerminateJob, CancellationToken cancellationToken = default)`
+
+Commits a task for a job in a Batch Account.
+
+#### Parameters:
+- **`BatchClient batchClient`**: The `BatchClient` to connect to the Batch Account.
+- **`string jobId`**: Job identifier.
+- **`CloudTask task`**: Task object.
+- **`bool setTerminateJob`**: Set to `true` to terminate the job after completion of all tasks.
+- **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
+
+#### Returns:
+**`bool`**: `true` if the task is committed, otherwise: `false`.
+
+#### Exceptions:
+- **`BatchException`**: Passed through, except when the task already exists.
+
+#### Example:
+```csharp
+bool isTaskCommitted = await batchClient.CommitTaskAsync(
+    jobId: "Job-123",
+    task: myTask,
+    setTerminateJob: true
+);
+```
+---
+
+<a name="batch-client-task-commit-tasks-async"></a>
+### `CommitTasksAsync(BatchClient batchClient, string jobId, List<CloudTask> tasks, bool setTerminateJob, CancellationToken cancellationToken = default)`
+
+Commits tasks for a job in a Batch Account.
+
+#### Parameters:
+- **`BatchClient batchClient`**: The `BatchClient` to connect to the Batch Account.
+- **`string jobId`**: Job identifier.
+- **`List<CloudTask> tasks`**: List of task objects.
+- **`bool setTerminateJob`**: Set to `true` to terminate the job after completion of all tasks.
+- **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
+
+#### Returns:
+**`bool`**: `true` if tasks are committed, otherwise: `false`.
+
+#### Exceptions:
+- **`BatchException`**: Passed through, except when a task already exists.
+
+#### Example:
+```csharp
+bool areTasksCommitted = await batchClient.CommitTasksAsync(
+    jobId: "Job-123",
+    tasks: new List<CloudTask> { task1, task2 },
+    setTerminateJob: true,
     cancellationToken: CancellationToken.None
 );
+```
+---
+
+<a name="batch-client-task-delete-task-async"></a>
+### `DeleteTaskAsync(BatchClient batchClient, string jobId, string taskId, CancellationToken cancellationToken = default)`
+
+Deletes a task for a job in a Batch Account.
+
+#### Parameters:
+- **`BatchClient batchClient`**: The `BatchClient` to connect to the Batch Account.
+- **`string jobId`**: Job identifier.
+- **`string taskId`**: Task identifier.
+- **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
+
+#### Returns:
+**`bool`**: `true` if the task is deleted, otherwise: `false`.
+
+#### Exceptions:
+- **`BatchException`**: Passed through, except when the task is not found.
+
+#### Example:
+```csharp
+bool isTaskDeleted = await batchClient.DeleteTaskAsync(
+    jobId: "Job-123",
+    taskId: "Task-456"
+);
+```
+---
+
+<a name="batch-client-task-update-task-async"></a>
+### `UpdateTaskAsync(BatchClient batchClient, string jobId, string taskId, string? commandLine = null, IList<EnvironmentSetting>? environmentSettings = null, List<string>? dependsOnTaskIds = null, CancellationToken cancellationToken = default)`
+
+Updates a task for a job in a Batch Account.
+
+This method calls:
+- [`JobOperations.GetTaskAsync(string, string, DetailLevel, IEnumerable<BatchClientBehavior>, CancellationToken)`](#), then if any update is needed:
+- [`CloudTask.CommitAsync(IEnumerable<BatchClientBehavior>, CancellationToken)`](#)
+
+#### Parameters:
+- **`BatchClient batchClient`**: The `BatchClient` to connect to the Batch Account.
+- **`string jobId`**: Job identifier.
+- **`string taskId`**: Task identifier.
+- **`string? commandLine`** *(optional)*: Task command line to update.
+- **`IList<EnvironmentSetting>? environmentSettings`** *(optional)*: Collection of `EnvironmentSetting` objects to update.
+- **`List<string>? dependsOnTaskIds`** *(optional)*: List of task IDs that the current task depends on.
+- **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
+
+#### Returns:
+**`Task`**
+
+#### Exceptions:
+- **`BatchException`**: Passed through, except when the task is not found.
+
+#### Example:
+```csharp
+await batchClient.UpdateTaskAsync(
+    jobId: "Job-123",
+    taskId: "Task-456",
+    commandLine: "echo Hello World",
+    environmentSettings: new List<EnvironmentSetting> { new EnvironmentSetting("VAR_NAME", "VAR_VALUE") },
+    dependsOnTaskIds: new List<string> { "Task-1", "Task-2" }
+);
+```
+---
+
+<a name="cloud-job-extensions"></a>
+# CloudJobExtensions
+* [UpdateAsync](#cloud-job-extensions-update-async)
+* [TerminateJobAsync](#cloud-job-extensions-terminate-job-async)
+* [IsAnyTaskFailedAsync](#cloud-job-extensions-is-any-task-failed-async)
+---
+
+<a name="cloud-job-extensions-update-async"></a>
+### `UpdateAsync(CloudJob job, string? newJobId = null, string? newPoolId = null, bool? terminateJobAfterTasksCompleted = null, bool? useTaskDependencies = null, CancellationToken cancellationToken = default)`
+
+Updates a `CloudJob` with new values.
+
+#### Parameters:
+- **`CloudJob job`**: The `CloudJob` object to update.
+- **`string? newJobId`** *(optional)*: New Job ID.
+- **`string? newPoolId`** *(optional)*: Pool ID to which the current job is attached.
+- **`bool? terminateJobAfterTasksCompleted`** *(optional)*: Set to `true` to terminate the job after completion of all tasks.
+- **`bool? useTaskDependencies`** *(optional)*: Set to `true` for task execution ordering.
+- **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
+
+#### Returns:
+**`Task`**
+
+#### Example:
+```csharp
+await job.UpdateAsync(
+    newJobId: "NewJob-123",
+    newPoolId: "NewPool",
+    terminateJobAfterTasksCompleted: true,
+    useTaskDependencies: true
+);
+```
+---
+
+<a name="cloud-job-extensions-terminate-job-async"></a>
+### `TerminateJobAsync(CloudJob job, CancellationToken cancellationToken = default)`
+
+Terminates a job if all tasks within the job are completed.
+
+#### Parameters:
+- **`CloudJob job`**: The `CloudJob` object to check and terminate.
+- **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
+
+#### Returns:
+**`bool`**: `true` if the job has been terminated, otherwise: `false`.
+
+#### Example:
+```csharp
+bool isTerminated = await job.TerminateJobAsync();
+```
+---
+
+<a name="cloud-job-extensions-is-any-task-failed-async"></a>
+### `IsAnyTaskFailedAsync(CloudJob job, CancellationToken cancellationToken = default)`
+
+Checks if any task failed within a job.
+
+#### Parameters:
+- **`CloudJob job`**: The `CloudJob` object to evaluate.
+- **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
+
+#### Returns:
+**`bool`**: `true` if any task within the job failed, otherwise: `false`.
+
+#### Example:
+```csharp
+bool hasFailedTasks = await job.IsAnyTaskFailedAsync();
 ```
 ---
