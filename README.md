@@ -156,7 +156,7 @@ BatchAccountResource batchAccount = await armClient.GetBatchAccountResourceAsync
 <a name="arm-virtual-machine-size"></a>
 ## Virtual Machine Size
 
-* [GetVirtualMachineSize](#get-batch-account-resource-async)
+* [GetVirtualMachineSize](#get-virtual-machine-size)
 ---
 <a name="get-virtual-machine-size"></a>
 
