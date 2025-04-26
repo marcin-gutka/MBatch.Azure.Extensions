@@ -25,7 +25,7 @@ namespace MBatch.Azure.Extensions
         /// <param name="minvCPUs">Optional: to choose sku within avaialable skus based on minimum vCPUs requirement.</param>
         /// <param name="familyName">Optional: to filter available skus within subscription and location.</param>
         /// <returns><see cref="string"/> of selected SKU name</returns>
-        /// <exception cref="ArgumentException">Thrown when neither skuName nor minMemory nor minvCPUs allowed to choose any SKU.</exception>
+        /// <exception cref="ArgumentException">Thrown when none of skuName, minMemory, minvCPUs allows SKU selection.</exception>
         public static string GetVirtualMachineSize(this ArmClient armClient,
             string subscriptionId, AzureLocation location,
             string? skuName = null,
