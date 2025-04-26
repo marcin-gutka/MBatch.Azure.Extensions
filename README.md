@@ -8,6 +8,7 @@ This is a nuget package for extending ArmClient and BatchClient objects by exten
 * [CloudJobExtensions](#cloud-job-extensions)
 * [CloudJobExtensions](#cloud-pool-extensions)
 * [Utilities](#utilities)
+* [Models](#models)
 
 <a name="arm-client-extensions"></a>
 # ArmClientExtensions
@@ -350,9 +351,9 @@ Creates a pool in the Batch Account if it does not already exist.
 - **`VirtualMachineConfiguration vmConfiguration`**: Chosen Virtual Machine configuration. Use [`VMUtilities.MatchVirtualMachineConfiguration(List<ImageInformation>, string?, string?, string?)`](#) to choose within Image Informations. To get Image Informations, call `PoolOperations.ListSupportedImages(DetailLevel, IEnumerable<BatchClientBehavior>)`using `BatchClient`.
 - **`string poolVMSize`**: Chosen Virtual Machine size. Call [`ArmClientExtensions.GetVirtualMachineSize(ArmClient, string, AzureLocation, string, double?, double?, string)`](#get-virtual-machine-size) to get Virtual Machine size based on chosen SKU or memory/vCPUs.
 - **`List<ApplicationPackageReference>? applications`** *(optional)*: List of applications to be installed in the created pool.
-- **`List<ManagedIdentityInfo>? identities`** *(optional)*: List of identities to be added for the created pool.
-- **`StartTaskSettings? startTaskModel`** *(optional)*: Object representing Start Task for the created pool.
-- **`IScaleSettings? scaleSettings`** *(optional)*: Object representing Scale settings for the created pool. Currently, only Fixed Scale is supported (use `FixedScaleSettings` to provide these settings).
+- **`List<ManagedIdentityInfo>? identities`** *(optional)*: List of identities to be added for the created pool. See [`ManagedIdentityInfo`](#models-managed-identity-info).
+- **`StartTaskSettings? startTaskModel`** *(optional)*: Object representing Start Task for the created pool. See [`StartTaskSettings`](#models-start-task-settings).
+- **`IScaleSettings? scaleSettings`** *(optional)*: Object representing Scale settings for the created pool. Currently, only Fixed Scale is supported (use [`FixedScaleSettings`](#models-iscale-settings) to provide these settings).
 - **`bool waitUntilCompleted`**: If `true`, the method waits for the operation to complete; otherwise, it returns when the operation has started.
 - **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
 
@@ -391,9 +392,9 @@ Creates a pool in the Batch Account if it does not already exist.
 - **`string vmNodeAgentSkuId`**: Virtual Machine node agent SKU Id.
 - **`string poolVMSize`**: Chosen Virtual Machine size. Use [`ArmClientExtensions.GetVirtualMachineSize(ArmClient, string, AzureLocation, string, double?, double?, string)`](#get-virtual-machine-size) to get Virtual Machine size based on chosen SKU or memory/vCPUs.
 - **`List<ApplicationPackageReference>? applications`** *(optional)*: List of applications to be installed in the created pool.
-- **`List<ManagedIdentityInfo>? identities`** *(optional)*: List of identities to be added for the created pool.
-- **`StartTaskSettings? startTaskModel`** *(optional)*: Object representing Start Task for the created pool.
-- **`IScaleSettings? scaleSettings`** *(optional)*: Object representing Scale settings for the created pool. Currently, only Fixed Scale is supported (use `FixedScaleSettings` to provide these settings).
+- **`List<ManagedIdentityInfo>? identities`** *(optional)*: List of identities to be added for the created pool. See [`ManagedIdentityInfo`](#models-managed-identity-info).
+- **`StartTaskSettings? startTaskModel`** *(optional)*: Object representing Start Task for the created pool. See [`StartTaskSettings`](#models-start-task-settings).
+- **`IScaleSettings? scaleSettings`** *(optional)*: Object representing Scale settings for the created pool. Currently, only Fixed Scale is supported (use [`FixedScaleSettings`](#models-iscale-settings) to provide these settings).
 - **`bool waitUntilCompleted`**: If `true`, the method waits for the operation to complete; otherwise, it returns when the operation has started.
 - **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
 
@@ -432,9 +433,9 @@ Creates a pool in the Batch Account if it does not already exist.
 - **`BatchDeploymentConfiguration vmConfiguration`**: Chosen Virtual Machine configuration.
 - **`string poolVMSize`**: Chosen Virtual Machine size. Use [`ArmClientExtensions.GetVirtualMachineSize(ArmClient, string, AzureLocation, string, double?, double?, string)`](#get-virtual-machine-size) to get Virtual Machine size based on chosen SKU or memory/vCPUs.
 - **`List<ApplicationPackageReference>? applications`** *(optional)*: List of applications to be installed in the created pool.
-- **`List<ManagedIdentityInfo>? identities`** *(optional)*: List of identities to be added for the created pool.
-- **`StartTaskSettings? startTaskModel`** *(optional)*: Object representing Start Task for the created pool.
-- **`IScaleSettings? scaleSettings`** *(optional)*: Object representing Scale settings for the created pool. Currently, only Fixed Scale is supported (use `FixedScaleSettings` to provide these settings).
+- **`List<ManagedIdentityInfo>? identities`** *(optional)*: List of identities to be added for the created pool. See [`ManagedIdentityInfo`](#models-managed-identity-info).
+- **`StartTaskSettings? startTaskModel`** *(optional)*: Object representing Start Task for the created pool. See [`StartTaskSettings`](#models-start-task-settings).
+- **`IScaleSettings? scaleSettings`** *(optional)*: Object representing Scale settings for the created pool. Currently, only Fixed Scale is supported (use [`FixedScaleSettings`](#models-iscale-settings) to provide these settings).
 - **`bool waitUntilCompleted`**: If `true`, the method waits for the operation to complete; otherwise, it returns when the operation has started.
 - **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
 
@@ -1177,7 +1178,7 @@ await pool.RecoverUnhealthyNodesAsync(
 ---
 
 <a name="utilities-cloud-task"></a>
-# Cloud Task Utilities
+## Cloud Task Utilities
 * [CreateTask](#utilities-cloud-task-create-task)
 ---
 
@@ -1210,7 +1211,7 @@ CloudTask task = CreateTask(
 ---
 
 <a name="utilities-command-line"></a>
-# Command Line Utilities
+## Command Line Utilities
 * [GetInstalledApplicationPath](#utilities-command-line-get-installed-application-path)
 ---
 
@@ -1243,7 +1244,7 @@ string appPath = GetInstalledApplicationPath(
 ---
 
 <a name="utilities-virtual-machine"></a>
-# Virtual Machine Utilities
+## Virtual Machine Utilities
 * [MatchVirtualMachineConfiguration](#utilities-virtual-machine-match-virtual-machine-configuration)
 ---
 
@@ -1276,6 +1277,82 @@ VirtualMachineConfiguration vmConfig = MatchVirtualMachineConfiguration(
     sku: "Standard_D2_v3",
     offer: "OfferName",
     publisher: "PublisherName"
+);
+```
+---
+
+<a name="models"></a>
+# Models
+* [IScaleSettings](#models-iscale-settings)
+* [FixedScaleSettings](#models-fixed-scale-settings)
+* [ManagedIdentityInfo](#models-managed-identity-info)
+* [StartTaskSettings](#models-start-task-settings)
+---
+
+<a name="models-iscale-settings"></a>
+### `IScaleSettings`
+
+Interface for setting pool scale settings.
+
+#### Remarks:
+- Currently, only fixed scale is supported.
+---
+
+<a name="models-fixed-scale-settings"></a>
+### `FixedScaleSettings(int TargetDedicatedNodes)`
+
+Model to provide pool fixed scale settings. Implements [`IScaleSettings`](#models-iscale-settings)
+
+#### Parameters:
+- **`int TargetDedicatedNodes`**: Sets target dedicated nodes.
+
+#### Remarks:
+- Low-priority nodes are not currently supported by this extension.
+
+#### Example:
+```csharp
+FixedScaleSettings fixedScaleSettings = new FixedScaleSettings(2)
+```
+---
+
+<a name="models-managed-identity-info"></a>
+### `ManagedIdentityInfo(string SubscriptionId, string ResourceGroup, string IdentityName)`
+
+Model to provide pool managed identity.
+
+#### Parameters:
+- **`string SubscriptionId`**: The subscription ID within which the Managed Identity is located.
+- **`string ResourceGroup`**: The resource group name within which the Managed Identity is located.
+- **`string IdentityName`**: Managed Identity name.
+
+#### Example:
+```csharp
+ManagedIdentityInfo identityInfo = new ManagedIdentityInfo(
+    "abc123-456def-789ghi",
+    "MyResourceGroup",
+    "MyManagedIdentity"
+);
+```
+---
+
+<a name="models-start-task-settings"></a>
+### `StartTaskSettings(string CommandLine, bool WaitForSuccess, BatchUserAccountElevationLevel ElevationLevel, BatchAutoUserScope AutoUserScope)`
+
+Model to provide pool start task.
+
+#### Parameters:
+- **`string CommandLine`**: Command line for the start task.
+- **`bool WaitForSuccess`**: When set to `true`, the pool remains in `ComputeNodeState.WaitingForStartTask` until the start task is completed.
+- **`BatchUserAccountElevationLevel ElevationLevel`**: Sets privileges to run the start task.
+- **`BatchAutoUserScope AutoUserScope`**: Configures task execution for a new user specified for the start task or a general auto-user account across each node.
+
+#### Example:
+```csharp
+StartTaskSettings startTask = new StartTaskSettings(
+    CommandLine: "cmd /c 'echo Hello World'",
+    true,
+    BatchUserAccountElevationLevel.Admin,
+    BatchAutoUserScope.Task
 );
 ```
 ---
