@@ -66,6 +66,9 @@ Use [`ArmClientExtensions.UpdateBatchApplicationPackageAsync`](#update-batch-app
 - **`string applicationVersion`**: Application version.
 - **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
 
+#### Returns:
+**`Task`**
+
 #### Example:
 ```csharp
 await armClient.ActivateBatchApplicationPackageAsync(
@@ -92,6 +95,9 @@ Deletes an application package record (application version) and the uploaded app
 - **`bool waitUntilCompleted`** *(optional)*: If `true`, the method waits for the operation to complete; otherwise, it returns when the operation has started.
 - **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
 
+#### Returns:
+**`Task`**
+
 #### Example:
 ```csharp
 await armClient.DeleteBatchApplicationPackageAsync(
@@ -117,6 +123,9 @@ Deletes an application, all its application package records, and the uploaded ap
 - **`string applicationName`**: Application name.
 - **`bool waitUntilCompleted`**: If `true`, the method waits for the operation to complete; otherwise, it returns when the operation has started.
 - **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
+
+#### Returns:
+**`Task`**
 
 #### Example:
 ```csharp
@@ -145,6 +154,9 @@ Creates a `BatchAccountResource` to interact with the Batch Account.
 - **`string resourceGroup`**: The resource group name within which the Azure Batch account is located.
 - **`string batchAccountName`**: Batch account name.
 - **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
+
+#### Returns:
+**`Task<BatchAccountResource>`**
 
 #### Example:
 ```csharp
@@ -254,6 +266,9 @@ Use [`BatchAccountResourceExtensions.UpdateApplicationPackageAsync`](#update-app
 - **`string applicationVersion`**: Application version.
 - **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
 
+#### Returns:
+**`Task`**
+
 #### Example:
 ```csharp
 await batchAccountResource.ActivateApplicationPackageAsync(
@@ -275,6 +290,9 @@ Deletes an application package record (application version) and the uploaded app
 - **`bool waitUntilCompleted`** *(optional)*: If `true`, the method waits for the operation to complete; otherwise, it returns when the operation has started.
 - **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
 
+#### Returns:
+**`Task`**
+
 #### Example:
 ```csharp
 await batchAccountResource.DeleteApplicationPackageAsync(
@@ -295,6 +313,9 @@ Deletes an application, all its application package records, and the uploaded ap
 - **`string applicationName`**: Application name.
 - **`bool waitUntilCompleted`**: If `true`, the method waits for the operation to complete; otherwise, it returns when the operation has started.
 - **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
+
+#### Returns:
+**`Task`**
 
 #### Example:
 ```csharp
@@ -330,6 +351,9 @@ Creates a pool in the Batch Account if it does not already exist.
 - **`IScaleSettings? scaleSettings`** *(optional)*: Object representing Scale settings for the created pool. Currently, only Fixed Scale is supported (use `FixedScaleSettings` to provide these settings).
 - **`bool waitUntilCompleted`**: If `true`, the method waits for the operation to complete; otherwise, it returns when the operation has started.
 - **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
+
+#### Returns:
+**`Task`**
 
 #### Exceptions:
 - **`ArgumentException`**: Thrown if the pool already exists.
@@ -369,6 +393,9 @@ Creates a pool in the Batch Account if it does not already exist.
 - **`bool waitUntilCompleted`**: If `true`, the method waits for the operation to complete; otherwise, it returns when the operation has started.
 - **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
 
+#### Returns:
+**`Task`**
+
 #### Exceptions:
 - **`ArgumentException`**: Thrown if the pool already exists.
 
@@ -407,6 +434,9 @@ Creates a pool in the Batch Account if it does not already exist.
 - **`bool waitUntilCompleted`**: If `true`, the method waits for the operation to complete; otherwise, it returns when the operation has started.
 - **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
 
+#### Returns:
+**`Task`**
+
 #### Exceptions:
 - **`ArgumentException`**: Thrown if the pool already exists.
 
@@ -435,6 +465,9 @@ Deletes an existing pool in the Batch Account.
 - **`string poolId`**: Pool identifier.
 - **`bool waitUntilCompleted`**: If `true`, the method waits for the operation to complete; otherwise, it returns when the operation has started.
 - **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
+
+#### Returns:
+**`Task`**
 
 #### Exceptions:
 - **`ArgumentException`**: Thrown if the pool is not found.
