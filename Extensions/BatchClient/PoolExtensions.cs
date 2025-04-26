@@ -86,7 +86,7 @@ namespace MBatch.Azure.Extensions
         }
 
         /// <summary>
-        /// Gets and deletes a pool in Batch Account.
+        /// Reboots nodes within a pool in Batch Account.
         /// This method calls following methods: <see cref="PoolOperations.GetPoolAsync(string, DetailLevel, IEnumerable{BatchClientBehavior}, CancellationToken)"/>, 
         /// <see cref="CloudPool.StopResizeAsync(IEnumerable{BatchClientBehavior}, CancellationToken)"/>,
         /// <see cref="PoolOperations.ListComputeNodes(string, DetailLevel, IEnumerable{BatchClientBehavior})"/>,
@@ -97,6 +97,7 @@ namespace MBatch.Azure.Extensions
         /// <param name="computeNodeRebootOption">Action to execute when node is rebooted.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <exception cref="BatchException">Passing through except when a pool is not found.</exception>
+        /// <remarks>Waits up to 5 minutes for pool to be in steady state if needed.</remarks>
         public static async Task RebootNodesAsync(this BatchClient batchClient, string poolId, ComputeNodeRebootOption computeNodeRebootOption, CancellationToken cancellationToken = default)
         {
             var pool = await batchClient.PoolOperations.GetPoolAsync(poolId, cancellationToken: cancellationToken);
@@ -105,7 +106,7 @@ namespace MBatch.Azure.Extensions
         }
 
         /// <summary>
-        /// Deletes a pool in Batch Account.
+        /// Reboots nodes within a pool in Batch Account.
         /// This method calls following methods: <see cref="CloudPool.StopResizeAsync(IEnumerable{BatchClientBehavior}, CancellationToken)"/>,
         /// <see cref="PoolOperations.ListComputeNodes(string, DetailLevel, IEnumerable{BatchClientBehavior})"/>,
         /// <see cref="ComputeNode.RebootAsync(ComputeNodeRebootOption?, IEnumerable{BatchClientBehavior}, CancellationToken)"/>.
@@ -115,6 +116,7 @@ namespace MBatch.Azure.Extensions
         /// <param name="computeNodeRebootOption">Action to execute when node is rebooted.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <exception cref="BatchException">Passing through except when a pool is not found.</exception>
+        /// <remarks>Waits up to 5 minutes for pool to be in steady state if needed.</remarks>
         public static async Task RebootNodesAsync(this BatchClient batchClient, CloudPool pool, ComputeNodeRebootOption computeNodeRebootOption, CancellationToken cancellationToken = default)
         {
             if (pool.AllocationState == AllocationState.Resizing)

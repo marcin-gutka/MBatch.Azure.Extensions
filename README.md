@@ -517,6 +517,7 @@ await batchAccountResource.UpdatePool(
 <a name="batch-client-extensions"></a>
 # BatchClientExtensions
 * [Job](#batch-client-job)
+* [Pool](#batch-client-pool)
 ---
 
 <a name="batch-client-job"></a>
@@ -741,6 +742,145 @@ Gets tasks counts for jobs in a Batch Account.
 ```csharp
 IEnumerable<TaskCountsResult> taskCounts = await batchClient.GetJobsTasksCountsAsync(
     jobsIds: new List<string> { "Job-123", "Job-124" }
+);
+```
+---
+
+<a name="batch-client-pool"></a>
+## Pool
+* [DoesPoolExistAsync](#batch-client-pool-does-exist-async)
+* [GetPoolJobs](#batch-client-pool-get-pool-jobs)
+* [DeletePoolIfExistsAsync](#batch-client-pool-delete-pool-if-exists-async)
+* [RebootNodesAsync(BatchClient, string, ComputeNodeRebootOption, CancellationToken)](#batch-client-pool-reboot-nodes-async1)
+* [RebootNodesAsync(BatchClient, CloudPool, ComputeNodeRebootOption, CancellationToken)](#batch-client-pool-reboot-nodes-async2)
+---
+
+<a name="batch-client-pool-does-exist-async"></a>
+### `DoesPoolExistAsync(BatchClient batchClient, string poolId, CancellationToken cancellationToken = default)`
+
+Checks if a pool exists in a Batch Account.
+
+#### Parameters:
+- **`BatchClient batchClient`**: The `BatchClient` to connect to the Batch Account.
+- **`string poolId`**: Pool identifier.
+- **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
+
+#### Returns:
+**`bool`**: `true` if the pool exists, otherwise `false`.
+
+#### Exceptions:
+- **`BatchException`**: Passed through, except when the pool is not found.
+
+#### Example:
+```csharp
+bool poolExists = await batchClient.DoesPoolExistAsync(
+    poolId: "MyPool",
+    cancellationToken: CancellationToken.None
+);
+```
+---
+
+<a name="batch-client-pool-get-pool-jobs"></a>
+### `GetPoolJobs(BatchClient batchClient, string poolId)`
+
+Gets all jobs for a pool in a Batch Account.
+
+#### Parameters:
+- **`BatchClient batchClient`**: The `BatchClient` to connect to the Batch Account.
+- **`string poolId`**: Pool identifier.
+
+#### Returns:
+**`IEnumerable<CloudJob>`**: Collection of `CloudJob`.
+
+#### Exceptions:
+- **`BatchException`**: Passed through, except when the pool is not found.
+
+#### Example:
+```csharp
+IEnumerable<CloudJob> poolJobs = batchClient.GetPoolJobs(poolId: "MyPool");
+```
+---
+
+<a name="batch-client-pool-delete-pool-if-exists-async"></a>
+### `DeletePoolIfExistsAsync(BatchClient batchClient, string poolId, CancellationToken cancellationToken = default)`
+
+Deletes a pool in a Batch Account.
+
+#### Parameters:
+- **`BatchClient batchClient`**: The `BatchClient` to connect to the Batch Account.
+- **`string poolId`**: Pool identifier.
+- **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
+
+#### Returns:
+**`bool`**: `true` if the pool is deleted; otherwise, `false`.
+
+#### Exceptions:
+- **`BatchException`**: Passed through, except when the pool is not found.
+
+#### Example:
+```csharp
+bool isDeleted = await batchClient.DeletePoolIfExistsAsync(
+    poolId: "MyPool"
+);
+```
+---
+
+<a name="batch-client-pool-reboot-nodes-async1"></a>
+### `RebootNodesAsync(BatchClient batchClient, string poolId, ComputeNodeRebootOption computeNodeRebootOption, CancellationToken cancellationToken = default)`
+
+Reboots nodes within a pool in a Batch Account.
+
+#### Parameters:
+- **`BatchClient batchClient`**: The `BatchClient` to connect to the Batch Account.
+- **`string poolId`**: Pool identifier.
+- **`ComputeNodeRebootOption computeNodeRebootOption`**: Action to execute when a node is rebooted.
+- **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
+
+#### Returns:
+**`Task`**
+
+#### Exceptions:
+- **`BatchException`**: Passed through, except when the pool is not found.
+
+#### Remarks:
+- Waits up to 5 minutes for the pool to reach a steady state if needed.
+
+#### Example:
+```csharp
+await batchClient.RebootNodesAsync(
+    poolId: "MyPool",
+    computeNodeRebootOption: ComputeNodeRebootOption.Requeue,
+    cancellationToken: CancellationToken.None
+);
+```
+---
+
+<a name="batch-client-pool-reboot-nodes-async2"></a>
+### `RebootNodesAsync(BatchClient batchClient, CloudPool pool, ComputeNodeRebootOption computeNodeRebootOption, CancellationToken cancellationToken = default)`
+
+Reboots nodes within a pool in a Batch Account.
+
+#### Parameters:
+- **`BatchClient batchClient`**: The `BatchClient` to connect to the Batch Account.
+- **`CloudPool pool`**: Pool object.
+- **`ComputeNodeRebootOption computeNodeRebootOption`**: Action to execute when a node is rebooted.
+- **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
+
+#### Returns:
+**`Task`**
+
+#### Exceptions:
+- **`BatchException`**: Passed through, except when the pool is not found.
+
+#### Remarks:
+- Waits up to 5 minutes for the pool to reach a steady state if needed.
+
+#### Example:
+```csharp
+await batchClient.RebootNodesAsync(
+    pool: myPool,
+    computeNodeRebootOption: ComputeNodeRebootOption.Requeue,
+    cancellationToken: CancellationToken.None
 );
 ```
 ---
