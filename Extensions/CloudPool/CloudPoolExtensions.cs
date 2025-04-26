@@ -21,7 +21,7 @@ namespace MBatch.Azure.Extensions
         /// <param name="computeNodeDeallocationOption">Action to be perform on task when a node is removed.</param>
         /// <param name="logger">Optional: for logging.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
-        /// <remarks>Low priority nodes are not currently supported by this extension.</remarks>
+        /// <remarks>When removing nodes, the custom comparer is used to determine which nodes are most efficient to be removed. AutoScale has to be disable. Low priority nodes are not currently supported by this extension.</remarks>
         public static async Task SetTargetNodesCountAsync(this CloudPool pool, int targetNodeCount, ComputeNodeDeallocationOption computeNodeDeallocationOption, ILogger? logger, CancellationToken cancellationToken = default)
         {
             await pool.RefreshAsync(cancellationToken: cancellationToken);
@@ -81,7 +81,6 @@ namespace MBatch.Azure.Extensions
         /// <param name="pool">CloudPool object.</param>
         /// <param name="logger">Optional: for logging.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
-        /// <remarks>When removing nodes, the custom comparer is used to determine which nodes are most efficient to be removed.</remarks>
         public static async Task RecoverUnhealthyNodesAsync(this CloudPool pool, ILogger? logger, CancellationToken cancellationToken = default)
         {
             await pool.RefreshAsync(cancellationToken: cancellationToken);
