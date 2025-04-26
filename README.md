@@ -4,6 +4,7 @@ This is a nuget package for extending ArmClient and BatchClient objects by exten
 
 * [ArmClientExtensions](#arm-client-extensions)
 * [BatchAccountResourceExtensions](#batch-account-resource-extensions)
+* [BatchClientExtensions](#batch-client-extensions)
 
 <a name="arm-client-extensions"></a>
 # ArmClientExtensions
@@ -509,6 +510,237 @@ await batchAccountResource.UpdatePool(
     identities: new List<ManagedIdentityInfo> { identity },
     startTaskModel: myStartTaskModel,
     scaleSettings: myScaleSettings
+);
+```
+---
+
+<a name="batch-client-extensions"></a>
+# BatchClientExtensions
+* [Job](#batch-client-job)
+---
+
+<a name="batch-client-job"></a>
+## Job
+* [GetJobAsync](#batch-client-job-get-async)
+* [CreateJobAsync](#batch-client-job-create-async)
+* [DeleteJobIfExistsAsync](#batch-client-job-delete-if-exists-async)
+* [UpdateJobAsync](#batch-client-job-update-async)
+* [TerminateJobAsync](#batch-client-job-terminate-async)
+* [GetRunningJobsAsync](#batch-client-job-get-running-jobs-async)
+* [IsAnyTaskFailedAsync](#batch-client-job-is-any-task-failed-async)
+* [GetJobsTasksCountsAsync](#batch-client-job-get-jobs-tasks-counts-async)
+---
+
+<a name="batch-client-job-get-async"></a>
+### `GetJobAsync(BatchClient batchClient, string jobId, CancellationToken cancellationToken = default)`
+
+Gets a job from a Batch Account.
+
+#### Parameters:
+- **`BatchClient batchClient`**: The `BatchClient` to connect to the Batch Account.
+- **`string jobId`**: Job identifier.
+- **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
+
+#### Returns:
+**`CloudJob`** when a job is found, otherwise **`null`**.
+
+#### Exceptions:
+- **`BatchException`**: Passed through, except when the job is not found.
+
+#### Example:
+```csharp
+CloudJob? job = await batchClient.GetJobAsync(
+    jobId: "Job-123",
+    cancellationToken: CancellationToken.None
+);
+```
+---
+
+<a name="batch-client-job-create-async"></a>
+### `CreateJobAsync(BatchClient batchClient, string poolId, string jobId, bool terminateJobAfterTasksCompleted = false, bool useTaskDependencies = false, CancellationToken cancellationToken = default)`
+
+Creates a job in a Batch Account.
+
+#### Parameters:
+- **`BatchClient batchClient`**: The `BatchClient` to connect to the Batch Account.
+- **`string poolId`**: Pool to which this job is attached.
+- **`string jobId`**: Job identifier.
+- **`bool terminateJobAfterTasksCompleted`** *(optional)*: Set to `true` to complete the job after all tasks are completed.
+- **`bool useTaskDependencies`** *(optional)*: Set to `true` when task execution ordering is required.
+- **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
+
+#### Returns:
+**`bool`**: `true` if the job is created, `false` if the job already exists.
+
+#### Exceptions:
+- **`BatchException`**: Passed through, except when the job already exists.
+
+#### Remarks:
+- `terminateJobAfterTasksCompleted` set to `true` terminates the job immediately if no tasks are attached. It is recommended to set this flag after tasks are added.
+
+#### Example:
+```csharp
+bool isCreated = await batchClient.CreateJobAsync(
+    poolId: "MyPool",
+    jobId: "Job-123",
+    terminateJobAfterTasksCompleted: true,
+    useTaskDependencies: false
+);
+```
+---
+
+<a name="batch-client-job-delete-if-exists-async"></a>
+### `DeleteJobIfExistsAsync(BatchClient batchClient, string jobId, CancellationToken cancellationToken = default)`
+
+Deletes a job from a Batch Account.
+
+#### Parameters:
+- **`BatchClient batchClient`**: The `BatchClient` to connect to the Batch Account.
+- **`string jobId`**: Job identifier.
+- **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
+
+#### Returns:
+**`bool`**: `true` if the job is deleted, otherwise `false`.
+
+#### Exceptions:
+- **`BatchException`**: Passed through, except when the job is not found.
+
+#### Example:
+```csharp
+bool isDeleted = await batchClient.DeleteJobIfExistsAsync(
+    jobId: "Job-123",
+    cancellationToken: CancellationToken.None
+);
+```
+---
+
+<a name="batch-client-job-update-async"></a>
+### `UpdateJobAsync(BatchClient batchClient, string jobId, string? newJobId = null, string? newPoolId = null, bool? terminateJobAfterTasksCompleted = null, bool? useTaskDependencies = null, CancellationToken cancellationToken = default)`
+
+Updates a job in a Batch Account.
+
+#### Parameters:
+- **`BatchClient batchClient`**: The `BatchClient` to connect to the Batch Account.
+- **`string jobId`**: Job identifier.
+- **`string? newJobId`** *(optional)*: New job identifier.
+- **`string? newPoolId`** *(optional)*: New pool to which the job is attached.
+- **`bool? terminateJobAfterTasksCompleted`** *(optional)*: Set to `true` to complete the job after all tasks are completed.
+- **`bool? useTaskDependencies`** *(optional)*: Set to `true` when task execution ordering is required.
+- **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
+
+#### Returns:
+**`Task`**
+
+#### Exceptions:
+- **`BatchException`**: Passed through as-is.
+
+#### Remarks:
+- `terminateJobAfterTasksCompleted` set to `true` terminates the job immediately if no tasks are attached. It is recommended to set this flag after tasks are added.
+
+#### Example:
+```csharp
+await batchClient.UpdateJobAsync(
+    jobId: "Job-123",
+    newJobId: "Job-124",
+    newPoolId: "MyPool",
+    terminateJobAfterTasksCompleted: true,
+    useTaskDependencies: false,
+    cancellationToken: CancellationToken.None
+);
+```
+---
+
+<a name="batch-client-job-terminate-async"></a>
+### `TerminateJobAsync(BatchClient batchClient, string jobId, CancellationToken cancellationToken = default)`
+
+Terminates a job in a Batch Account.
+
+#### Parameters:
+- **`BatchClient batchClient`**: The `BatchClient` to connect to the Batch Account.
+- **`string jobId`**: Job identifier.
+- **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
+
+#### Returns:
+**`bool`**: `true` if the job is terminated, `false` if the job does not exist.
+
+#### Exceptions:
+- **`BatchException`**: Passed through as-is.
+
+#### Example:
+```csharp
+bool isTerminated = await batchClient.TerminateJobAsync(
+    jobId: "Job-123",
+    cancellationToken: CancellationToken.None
+);
+```
+---
+
+<a name="batch-client-job-get-running-jobs-async"></a>
+### `GetRunningJobsAsync(BatchClient batchClient, string poolId)`
+
+Gets running jobs for a pool in a Batch Account.
+
+#### Parameters:
+- **`BatchClient batchClient`**: The `BatchClient` to connect to the Batch Account.
+- **`string poolId`**: Pool identifier.
+
+#### Returns:
+**`List<string>`**: List of running job IDs.
+
+#### Exceptions:
+- **`BatchException`**: Passed through as-is.
+
+#### Example:
+```csharp
+List<string> runningJobs = batchClient.GetRunningJobsAsync("MyPool");
+```
+---
+
+<a name="batch-client-job-is-any-task-failed-async"></a>
+### `IsAnyTaskFailedAsync(BatchClient batchClient, string jobId, CancellationToken cancellationToken = default)`
+
+Checks if any task failed within a job in a Batch Account.
+
+#### Parameters:
+- **`BatchClient batchClient`**: The `BatchClient` to connect to the Batch Account.
+- **`string jobId`**: Job identifier.
+- **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
+
+#### Returns:
+**`bool`**: `true` if any task within a job failed; otherwise, `false`.
+
+#### Exceptions:
+- **`BatchException`**: Passed through as-is.
+- **`ArgumentException`**: Thrown when the job is not found.
+
+#### Example:
+```csharp
+bool hasFailedTasks = await batchClient.IsAnyTaskFailedAsync(
+    jobId: "Job-123"
+);
+```
+---
+
+<a name="batch-client-job-get-jobs-tasks-counts-async"></a>
+### `GetJobsTasksCountsAsync(BatchClient batchClient, IEnumerable<string> jobsIds, CancellationToken cancellationToken = default)`
+
+Gets tasks counts for jobs in a Batch Account.
+
+#### Parameters:
+- **`BatchClient batchClient`**: The `BatchClient` to connect to the Batch Account.
+- **`IEnumerable<string> jobsIds`**: Collection of job IDs.
+- **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
+
+#### Returns:
+**`IEnumerable<TaskCountsResult>`**: Collection of `TaskCountsResult` for the provided job IDs.
+
+#### Exceptions:
+- **`BatchException`**: Passed through as-is.
+
+#### Example:
+```csharp
+IEnumerable<TaskCountsResult> taskCounts = await batchClient.GetJobsTasksCountsAsync(
+    jobsIds: new List<string> { "Job-123", "Job-124" }
 );
 ```
 ---
