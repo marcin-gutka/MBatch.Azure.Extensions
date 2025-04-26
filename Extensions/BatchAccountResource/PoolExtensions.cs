@@ -202,7 +202,7 @@ namespace MBatch.Azure.Extensions
         /// <param name="scaleSettings">Optional: Object representing Scale settings for the created pool. Currently only Fixed Scale is supported (use <see cref="FixedScaleSettings"/> to provide those settings).</param>
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <exception cref="ArgumentException">Thrown when pool is not found.</exception>
-        public static async Task UpdatePool(this BatchAccountResource batchAccountResource,
+        public static async Task UpdatePoolAsync(this BatchAccountResource batchAccountResource,
             string poolId,
             List<ApplicationPackageReference>? applications,
             List<ManagedIdentityInfo>? identities,
