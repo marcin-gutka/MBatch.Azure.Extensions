@@ -1,12 +1,12 @@
 ﻿# MBatch.Azure.Extensions
 
-This is a nuget package for extending ArmClient and BatchClient objects by extensions methods to interact with Azure Batch Account. It also includes few static utilities methods.
+This is a nuget package for extending ArmClient and BatchClient objects by extensions methods to interact with Azure Batch Account. It also contains few static utilities methods.
 
 * [ArmClientExtensions](#arm-client-extensions)
 * [BatchAccountResourceExtensions](#batch-account-resource-extensions)
 * [BatchClientExtensions](#batch-client-extensions)
 * [CloudJobExtensions](#cloud-job-extensions)
-* [CloudJobExtensions](#cloud-pool-extensions)
+* [CloudPoolExtensions](#cloud-pool-extensions)
 * [Utilities](#utilities)
 * [Models](#models)
 
