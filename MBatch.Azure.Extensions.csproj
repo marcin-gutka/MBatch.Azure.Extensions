@@ -15,18 +15,19 @@
     <PackageTags>Azure Batch; Batch; Azure; Microsoft; MBatch</PackageTags>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	<PackageIcon>MBatchLogo_126x128.jpg</PackageIcon>
-	<PackageReadmeFile>README_nuget.md</PackageReadmeFile>
 	<RepositoryUrl>https://github.com/marcin-gutka/MBatch</RepositoryUrl>
 	<IncludeSymbols>True</IncludeSymbols>
 	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 	<Description>A set of useful extensions for ArmClient, BatchClient, BatchAccountResource, CloudPool and CloudJob</Description>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="C:\Users\Gucio\Downloads\MBatchLogo_126x128.jpg">
+    <None Include="NugetDocs\MBatchLogo_126x128.jpg">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+	  <None Include="NugetDocs\README.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
   <ItemGroup>
@@ -34,13 +35,6 @@
     <PackageReference Include="Microsoft.Azure.Batch" Version="16.3.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.4" />
     <PackageReference Include="System.Text.Json" Version="9.0.4" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="NugetDocs\README_nuget.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
   </ItemGroup>
 
 </Project>
