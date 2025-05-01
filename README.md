@@ -8,7 +8,7 @@ Following classes are extended:
 * `BatchAccountResource`
 * `BatchClient`
 * `CloudJob`
-* `CloudPoolExtensions`
+* `CloudPool`
 * `Utilities`
 * `Models`
 
