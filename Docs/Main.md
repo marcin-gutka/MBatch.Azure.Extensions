@@ -1,9 +1,9 @@
 ﻿# MBatch.Azure.Extensions Documentation
 
 * [ArmClientExtensions](ArmClientExtensions.md)
-* [BatchAccountResourceExtensions](#batch-account-resource-extensions)
-* [BatchClientExtensions](#batch-client-extensions)
-* [CloudJobExtensions](#cloud-job-extensions)
-* [CloudPoolExtensions](#cloud-pool-extensions)
-* [Utilities](#utilities)
-* [Models](#models)
+* [BatchAccountResourceExtensions](BatchAccountResourceExtensions.md)
+* [BatchClientExtensions](BatchClientExtensions.md)
+* [CloudJobExtensions](CloudJobExtensions.md)
+* [CloudPoolExtensions](CloudPoolExtensions.md)
+* [Utilities](Utilities.md)
+* [Models](Models.md)
