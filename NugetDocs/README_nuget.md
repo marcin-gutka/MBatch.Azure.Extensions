@@ -1,15 +1,30 @@
 ﻿# General info
-Package for extending ArmClient and BatchClient objects by extensions methods to interact with Azure Batch Account. It also contains few static utilities methods.
-Internally it uses Azure.ResourceManager.Batch and Microsoft.Azure.Batch as clients extended by this nuget are located there.
+This is a nuget package for extending native client capabilities by extensions methods to interact with Azure Batch Account. It also contains a few static utilities methods.
+Internally Azure.ResourceManager.Batch and Microsoft.Azure.Batch are consumed as way of comunicating with Azure Batch Account.
 
 # Prerequisites
 Enough access rights to Azure Subscription.
 
+The resource to fully use extensions methods from this package needs to have following permissions within Azure Subscription/Batch Account:
+* read List or Get Batch Accounts
+* read List or Get Applications
+* read Get Application Package
+* read List or Get Pools
+* write Create or Update Pool
+* other Stop Pool Resize
+* read List Supported Batch Virtual Machinde VM
+
+additionally for deploying application for a Batch Account:
+* write Create or Update Applciation Package
+* other Activate Application Package
+
+It is possible to create custom role(s) within a Azure Subscription and assign above permission to it.
+
 # Documentation
-Provide here link to github README.md 
+[Documentation](https://github.com/marcin-gutka/MBatch/blob/master/Docs/Main.md)
 
 # Examples
-Provide here link to example API project
+TODO: Provide here link to example API project
 
 # Troubleshooting
-Provide here link to githbub issues
+[Github issues](https://github.com/marcin-gutka/MBatch/issues)
