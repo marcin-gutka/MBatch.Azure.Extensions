@@ -9,15 +9,16 @@
 	<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
 	<EnablePackageValidation>true</EnablePackageValidation>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Title>MBatch</Title>
+    <Title>MBatch.Azure.Extensions</Title>
     <Version>0.1.0</Version>
     <Authors>Marcin Gutka</Authors>
     <PackageTags>Azure Batch; Batch; Azure; Microsoft; MBatch</PackageTags>
-	<DebugType>embedded</DebugType>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	<PackageIcon>MBatchLogo_126x128.jpg</PackageIcon>
 	<PackageReadmeFile>README_nuget.md</PackageReadmeFile>
 	<RepositoryUrl>https://github.com/marcin-gutka/MBatch</RepositoryUrl>
+	<IncludeSymbols>True</IncludeSymbols>
+	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
