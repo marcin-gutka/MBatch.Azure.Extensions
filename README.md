@@ -1,7 +1,7 @@
 ﻿# MBatch.Azure.Extensions
 
 This is a nuget package for extending native client capabilities by extensions methods to interact with Azure Batch Account. It also contains few static utilities methods.
-Internally it uses Azure.ResourceManager.Batch and Microsoft.Azure.Batch as clients extended by this nuget are located there.
+Internally Azure.ResourceManager.Batch and Microsoft.Azure.Batch are used as clients extended by this nuget are located there.
 
 Following classes are extended:
 * `ArmClient`
