@@ -18,7 +18,7 @@ additionally for deploying application for a Batch Account:
 * write Create or Update Applciation Package
 * other Activate Application Package
 
-It is possible to create custom role(s) within a Azure Subscription and assign above permission to it.
+It is possible to create custom role(s) within a Azure Subscription and assign above permissions to it.
 
 # Documentation
 [Documentation](https://github.com/marcin-gutka/MBatch/blob/master/Docs/Main.md)
