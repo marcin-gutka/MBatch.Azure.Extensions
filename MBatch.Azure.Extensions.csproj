@@ -19,6 +19,7 @@
 	<RepositoryUrl>https://github.com/marcin-gutka/MBatch</RepositoryUrl>
 	<IncludeSymbols>True</IncludeSymbols>
 	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	<Description>A set of useful extensions for ArmClient, BatchClient, BatchAccountResource, CloudPool and CloudJob</Description>
   </PropertyGroup>
 
   <ItemGroup>
