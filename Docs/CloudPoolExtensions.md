@@ -45,7 +45,7 @@ Recovers unhealthy nodes in a pool.
 - **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
 
 #### Returns:
-**`Task`**
+**`int`**: Number of unhealthy nodes.
 
 #### Remarks:
 - By providing 

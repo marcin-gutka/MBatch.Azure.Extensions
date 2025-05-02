@@ -81,7 +81,8 @@ namespace MBatch.Azure.Extensions
         /// <param name="pool">CloudPool object.</param>
         /// <param name="logger">Optional: for logging.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
-        public static async Task RecoverUnhealthyNodesAsync(this CloudPool pool, ILogger? logger, CancellationToken cancellationToken = default)
+        /// <returns><see cref="int"/>: Number of unhealthy nodes.</returns>
+        public static async Task<int> RecoverUnhealthyNodesAsync(this CloudPool pool, ILogger? logger, CancellationToken cancellationToken = default)
         {
             await pool.RefreshAsync(cancellationToken: cancellationToken);
 
@@ -98,32 +99,36 @@ namespace MBatch.Azure.Extensions
             {
                 switch (node.State)
                 {
-                    case ComputeNodeState.Offline:
+                    case ComputeNodeState.Offline or ComputeNodeState.Deallocated:
                         taskList.Add(node.EnableSchedulingAsync(cancellationToken: cancellationToken));
-                        logger?.LogInformation("Node '{NodeId}' was offline in pool '{PoolId}'. Enabling scheduling was activated.", node.Id, pool.Id);
+                        logger?.LogInformation("Node '{NodeId}' was '{State}' in pool '{PoolId}'. Enabling scheduling was activated.", node.Id, node.State.ToString(), pool.Id);
                         break;
                     case ComputeNodeState.Unusable:
                         taskList.Add(node.RebootAsync(rebootOption: ComputeNodeRebootOption.Requeue, cancellationToken: cancellationToken));
-                        logger?.LogInformation("Node '{NodeId}' was unusable in pool '{PoolId}'. Rebooting was triggered.", node.Id, pool.Id);
+                        logger?.LogInformation("Node '{NodeId}' was '{State}' in pool '{PoolId}'. Rebooting was triggered.", node.Id, node.State.ToString(), pool.Id);
                         break;
                     case ComputeNodeState.Unknown:
                         if (pool.AllocationState != AllocationState.Resizing)
                         {
                             taskList.Add(node.RemoveFromPoolAsync(deallocationOption: ComputeNodeDeallocationOption.Requeue, cancellationToken: cancellationToken));
-                            logger?.LogInformation("Node '{NodeId}' had Unkown state in pool '{PoolId}'. Node will be removed.", node.Id, pool.Id);
+                            logger?.LogInformation("Node '{NodeId}' was '{State}' in pool '{PoolId}'. Node will be removed.", node.Id, node.State.ToString(), pool.Id);
                         }
                         break;
                 }
             }
 
-            if (taskList.Count > 0)
-                logger?.LogInformation("Found {TaskListCount} unhealthy nodes in pool '{PoolId}'.", taskList.Count, pool.Id);
+            var numberOfUnhealthyNodes = taskList.Count;
+
+            if (numberOfUnhealthyNodes > 0)
+                logger?.LogInformation("Found {TaskListCount} unhealthy nodes in pool '{PoolId}'.", numberOfUnhealthyNodes, pool.Id);
 
             await Task.WhenAll(taskList);
+
+            return numberOfUnhealthyNodes;
         }
 
         private static string GetUnhealthyNodesFilter() =>
-            "state eq 'offline' or state eq 'unusable' or state eq 'unknown'";
+            "state eq 'offline' or state eq 'deallocated' or state eq 'unusable' or state eq 'unknown'";
 
         #region Node State Comparer
         private class NodeStateComparerForRemoving : IComparer<ComputeNodeState?>
