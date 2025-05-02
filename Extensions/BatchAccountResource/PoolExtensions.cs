@@ -11,6 +11,9 @@ using Microsoft.Azure.Batch;
 
 namespace MBatch.Azure.Extensions
 {
+    /// <summary>
+    /// Static class for extensions methods for <see cref="BatchAccountResource"/>.
+    /// </summary>
     public static partial class BatchAccountResourceExtensions
     {
         #region Create
