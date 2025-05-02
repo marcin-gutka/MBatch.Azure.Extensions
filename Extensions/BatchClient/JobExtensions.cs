@@ -143,7 +143,7 @@ namespace MBatch.Azure.Extensions
         /// <param name="poolId">Pool Id.</param>
         /// <returns><see langword="List"/> of <see langword="string"/> with running jobs ids.</returns>
         /// <exception cref="BatchException">Passing through exception.</exception>
-        public static List<string> GetRunningJobsAsync(this BatchClient batchClient, string poolId)
+        public static List<string> GetRunningJobs(this BatchClient batchClient, string poolId)
         {
             var jobs = batchClient.JobOperations.ListJobs();
 
