@@ -114,7 +114,7 @@ namespace MBatch.Azure.Extensions
             bool waitUntilCompleted,
             CancellationToken cancellationToken = default)
         {
-            if (GetPoolAsync(batchAccountResource, poolId, cancellationToken) is not null)
+            if (await GetPoolAsync(batchAccountResource, poolId, cancellationToken) is not null)
                 throw new ArgumentException($"Pool: '{poolId}' already exists.");
 
             var batchAccountPoolData = new BatchAccountPoolData()
@@ -237,7 +237,19 @@ namespace MBatch.Azure.Extensions
             await pool.UpdateAsync(batchAccountPoolData, cancellationToken: cancellationToken);
         }
 
-        private static async Task<BatchAccountPoolResource> GetPoolAsync(BatchAccountResource batchAccountResource, string poolId, CancellationToken cancellationToken = default) =>
-            await batchAccountResource.GetBatchAccountPoolAsync(poolId, cancellationToken);
+        private static async Task<BatchAccountPoolResource?> GetPoolAsync(BatchAccountResource batchAccountResource, string poolId, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                return await batchAccountResource.GetBatchAccountPoolAsync(poolId, cancellationToken);
+            }
+            catch (RequestFailedException e)
+            {
+                if (e.ErrorCode == "PoolNotFound")
+                    return null;
+
+                throw;
+            }
+        }
     }
 }
