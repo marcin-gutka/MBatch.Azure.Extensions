@@ -3,6 +3,7 @@ using Azure.ResourceManager;
 using Azure.ResourceManager.Batch;
 using Azure.ResourceManager.Batch.Models;
 using Azure.ResourceManager.Resources;
+using System.Globalization;
 
 namespace MBatch.Azure.Extensions
 {
@@ -80,6 +81,6 @@ namespace MBatch.Azure.Extensions
         }
 
         private readonly static Func<BatchSupportedSku, string, double> GetCapability = (sku, capabilityName) =>
-            double.Parse(sku.Capabilities.First(x => x.Name == capabilityName).Value);
+            double.Parse(sku.Capabilities.First(x => x.Name == capabilityName).Value, CultureInfo.InvariantCulture);
     }
 }
