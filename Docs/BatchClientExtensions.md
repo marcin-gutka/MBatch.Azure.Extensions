@@ -12,7 +12,7 @@
 * [DeleteJobIfExistsAsync](#batch-client-job-delete-if-exists-async)
 * [UpdateJobAsync](#batch-client-job-update-async)
 * [TerminateJobAsync](#batch-client-job-terminate-async)
-* [GetRunningJobsAsync](#batch-client-job-get-running-jobs-async)
+* [GetRunningJobs](#batch-client-job-get-running-jobs)
 * [IsAnyTaskFailedAsync](#batch-client-job-is-any-task-failed-async)
 * [GetJobsTasksCountsAsync](#batch-client-job-get-jobs-tasks-counts-async)
 ---
@@ -161,8 +161,8 @@ bool isTerminated = await batchClient.TerminateJobAsync(
 ```
 ---
 
-<a name="batch-client-job-get-running-jobs-async"></a>
-### `GetRunningJobsAsync(BatchClient batchClient, string poolId)`
+<a name="batch-client-job-get-running-jobs"></a>
+### `GetRunningJobs(BatchClient batchClient, string poolId)`
 
 Gets running jobs for a pool in a Batch Account.
 
@@ -178,7 +178,7 @@ Gets running jobs for a pool in a Batch Account.
 
 #### Example:
 ```csharp
-List<string> runningJobs = batchClient.GetRunningJobsAsync("MyPool");
+List<string> runningJobs = batchClient.GetRunningJobs("MyPool");
 ```
 ---
 
