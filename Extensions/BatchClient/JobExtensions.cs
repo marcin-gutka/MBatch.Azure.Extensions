@@ -98,21 +98,19 @@ namespace MBatch.Azure.Extensions
         /// </summary>
         /// <param name="batchClient">BatchClient to connect to Batch Account.</param>
         /// <param name="jobId">Job Id.</param>
-        /// <param name="newJobId">new job Id.</param>
-        /// <param name="newPoolId">new pool to which job is attached.</param>
         /// <param name="terminateJobAfterTasksCompleted">Set to <see langword="true"/> for complete job after all tasks are completed.</param>
         /// <param name="useTaskDependencies">Set to <see langword="true"/> when task execution ordering is required.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <exception cref="BatchException">Passing through exception.</exception>
         /// <remarks>terminateJobAfterTasksCompleted set to <see langword="true"/> terminates job immediately if there are no task attached. It is recommended to set this flag after tasks are added.</remarks>
-        public static async Task UpdateJobAsync(this BatchClient batchClient, string jobId, string? newJobId = null, string? newPoolId = null, bool? terminateJobAfterTasksCompleted = null, bool? useTaskDependencies = null, CancellationToken cancellationToken = default)
+        public static async Task UpdateJobAsync(this BatchClient batchClient, string jobId, bool? terminateJobAfterTasksCompleted = null, bool? useTaskDependencies = null, CancellationToken cancellationToken = default)
         {
             var job = await GetJobAsync(batchClient, jobId, cancellationToken);
 
             if (job is null)
                 return;
 
-            await job.UpdateAsync(newJobId, newPoolId, terminateJobAfterTasksCompleted, useTaskDependencies, cancellationToken);
+            await job.UpdateAsync(terminateJobAfterTasksCompleted, useTaskDependencies, cancellationToken);
         }
 
         /// <summary>

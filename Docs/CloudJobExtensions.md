@@ -6,14 +6,12 @@
 ---
 
 <a name="cloud-job-extensions-update-async"></a>
-### `UpdateAsync(CloudJob job, string? newJobId = null, string? newPoolId = null, bool? terminateJobAfterTasksCompleted = null, bool? useTaskDependencies = null, CancellationToken cancellationToken = default)`
+### `UpdateAsync(CloudJob job, bool? terminateJobAfterTasksCompleted = null, bool? useTaskDependencies = null, CancellationToken cancellationToken = default)`
 
 Updates a `CloudJob` with new values.
 
 #### Parameters:
 - **`CloudJob job`**: The `CloudJob` object to update.
-- **`string? newJobId`** *(optional)*: New Job ID.
-- **`string? newPoolId`** *(optional)*: Pool ID to which the current job is attached.
 - **`bool? terminateJobAfterTasksCompleted`** *(optional)*: Set to `true` to terminate the job after completion of all tasks.
 - **`bool? useTaskDependencies`** *(optional)*: Set to `true` for task execution ordering.
 - **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
@@ -24,8 +22,6 @@ Updates a `CloudJob` with new values.
 #### Example:
 ```csharp
 await job.UpdateAsync(
-    newJobId: "NewJob-123",
-    newPoolId: "NewPool",
     terminateJobAfterTasksCompleted: true,
     useTaskDependencies: true
 );

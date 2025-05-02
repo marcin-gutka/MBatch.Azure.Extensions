@@ -13,32 +13,12 @@ namespace MBatch.Azure.Extensions
         /// This method calls <see cref="CloudJob.CommitChangesAsync(IEnumerable{BatchClientBehavior}, CancellationToken)"/>.
         /// </summary>
         /// <param name="job">CloudJob object.</param>
-        /// <param name="newJobId">new Job Id.</param>
-        /// <param name="newPoolId">Pool Id to which current job is attached.</param>
         /// <param name="terminateJobAfterTasksCompleted">Set to <see langword="true"/> to terminate job after completion of all tasks.</param>
         /// <param name="useTaskDependencies">Set to <see langword="true"/> when task execution ordering is required.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
-        public static async Task UpdateAsync(this CloudJob job, string? newJobId = null, string? newPoolId = null, bool? terminateJobAfterTasksCompleted = null, bool? useTaskDependencies = null, CancellationToken cancellationToken = default)
+        public static async Task UpdateAsync(this CloudJob job, bool? terminateJobAfterTasksCompleted = null, bool? useTaskDependencies = null, CancellationToken cancellationToken = default)
         {
             var update = false;
-
-            if (!string.IsNullOrEmpty(newJobId))
-            {
-                if (job.Id != newJobId)
-                {
-                    job.Id = newJobId;
-                    update = true;
-                }
-            }
-
-            if (!string.IsNullOrEmpty(newPoolId))
-            {
-                if (job.PoolInformation.PoolId != newPoolId)
-                {
-                    job.PoolInformation.PoolId = newPoolId;
-                    update = true;
-                }
-            }
 
             if (terminateJobAfterTasksCompleted != null)
             {

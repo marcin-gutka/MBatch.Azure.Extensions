@@ -101,15 +101,13 @@ bool isDeleted = await batchClient.DeleteJobIfExistsAsync(
 ---
 
 <a name="batch-client-job-update-async"></a>
-### `UpdateJobAsync(BatchClient batchClient, string jobId, string? newJobId = null, string? newPoolId = null, bool? terminateJobAfterTasksCompleted = null, bool? useTaskDependencies = null, CancellationToken cancellationToken = default)`
+### `UpdateJobAsync(BatchClient batchClient, string jobId, bool? terminateJobAfterTasksCompleted = null, bool? useTaskDependencies = null, CancellationToken cancellationToken = default)`
 
 Updates a job in a Batch Account.
 
 #### Parameters:
 - **`BatchClient batchClient`**: The `BatchClient` to connect to the Batch Account.
 - **`string jobId`**: Job identifier.
-- **`string? newJobId`** *(optional)*: New job identifier.
-- **`string? newPoolId`** *(optional)*: New pool to which the job is attached.
 - **`bool? terminateJobAfterTasksCompleted`** *(optional)*: Set to `true` to complete the job after all tasks are completed.
 - **`bool? useTaskDependencies`** *(optional)*: Set to `true` when task execution ordering is required.
 - **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
@@ -127,8 +125,6 @@ Updates a job in a Batch Account.
 ```csharp
 await batchClient.UpdateJobAsync(
     jobId: "Job-123",
-    newJobId: "Job-124",
-    newPoolId: "MyPool",
     terminateJobAfterTasksCompleted: true,
     useTaskDependencies: false,
     cancellationToken: CancellationToken.None
