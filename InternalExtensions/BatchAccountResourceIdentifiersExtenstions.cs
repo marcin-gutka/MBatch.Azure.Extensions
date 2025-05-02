@@ -7,6 +7,6 @@ namespace MBatch.Azure.Extensions.InternalExtensions
     {
         internal static ResourceIdentifier GetBatchAccountApplicationResourceIdentifier(this BatchAccountResource batchAccountResource,
             string applicationName) =>
-            ResourceIdentifier.Parse($"{batchAccountResource.Data.AccountEndpoint}/applications/{applicationName}");
+            ResourceIdentifier.Parse($"{batchAccountResource.Id}/applications/{applicationName}");
     }
 }
