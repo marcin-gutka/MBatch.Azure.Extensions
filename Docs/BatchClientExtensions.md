@@ -483,35 +483,3 @@ bool isTaskDeleted = await batchClient.DeleteTaskAsync(
     taskId: "Task-456"
 );
 ```
----
-
-<a name="batch-client-task-update-task-async"></a>
-### `UpdateTaskAsync(BatchClient batchClient, string jobId, string taskId, string? commandLine = null, IList<EnvironmentSetting>? environmentSettings = null, List<string>? dependsOnTaskIds = null, CancellationToken cancellationToken = default)`
-
-Updates a task for a job in a Batch Account.
-
-#### Parameters:
-- **`BatchClient batchClient`**: The `BatchClient` to connect to the Batch Account.
-- **`string jobId`**: Job identifier.
-- **`string taskId`**: Task identifier.
-- **`string? commandLine`** *(optional)*: Task command line to update.
-- **`IList<EnvironmentSetting>? environmentSettings`** *(optional)*: Collection of `EnvironmentSetting` objects to update.
-- **`List<string>? dependsOnTaskIds`** *(optional)*: List of task IDs that the current task depends on.
-- **`CancellationToken cancellationToken`** *(optional)*: A token to cancel the operation.
-
-#### Returns:
-**`Task`**
-
-#### Exceptions:
-- **`BatchException`**: Passed through, except when the task is not found.
-
-#### Example:
-```csharp
-await batchClient.UpdateTaskAsync(
-    jobId: "Job-123",
-    taskId: "Task-456",
-    commandLine: "echo Hello World",
-    environmentSettings: new List<EnvironmentSetting> { new EnvironmentSetting("VAR_NAME", "VAR_VALUE") },
-    dependsOnTaskIds: new List<string> { "Task-1", "Task-2" }
-);
-```

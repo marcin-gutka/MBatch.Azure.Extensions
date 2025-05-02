@@ -125,67 +125,6 @@ namespace MBatch.Azure.Extensions
             }
         }
 
-        /// <summary>
-        /// Updates a task for a job in a Batch Account.
-        /// This method calls <see cref="JobOperations.GetTaskAsync(string, string, DetailLevel, IEnumerable{BatchClientBehavior}, CancellationToken)"/>, then if any update is needed
-        /// it calls <see cref="CloudTask.CommitAsync(IEnumerable{BatchClientBehavior}, CancellationToken)"/>.
-        /// </summary>
-        /// <param name="batchClient">BatchClient to connect to Batch Account.</param>
-        /// <param name="jobId">Job Id.</param>
-        /// <param name="taskId">Task Id.</param>
-        /// <param name="commandLine">Task command line to update.</param>
-        /// <param name="environmentSettings">Collection of EnvironmentSetting to update.</param>
-        /// <param name="dependsOnTaskIds">List of task Ids to update on which current task is dependent.</param>
-        /// <param name="cancellationToken">Cancellation token.</param>
-        /// <exception cref="BatchException">Passing through except when a task is not found.</exception>
-        public static async Task UpdateTaskAsync(this BatchClient batchClient, string jobId, string taskId, string? commandLine = null, IList<EnvironmentSetting>? environmentSettings = null, List<string>? dependsOnTaskIds = null, CancellationToken cancellationToken = default)
-        {
-            var task = await GetTaskAsync(batchClient, jobId, taskId, cancellationToken);
-
-            if (task is null)
-                return;
-
-            var update = false;
-
-            if (!string.IsNullOrWhiteSpace(commandLine))
-            {
-                if (task.CommandLine != commandLine)
-                {
-                    task.CommandLine = commandLine;
-                    update = true;
-                }
-            }
-
-            if (environmentSettings is not null)
-            {
-                task.EnvironmentSettings = environmentSettings;
-                update = true;
-            }
-
-            if (dependsOnTaskIds is not null)
-            {
-                task.DependsOn = TaskDependencies.OnIds(dependsOnTaskIds);
-                update = true;
-            }
-
-            if (update)
-            {
-                await task.CommitAsync(cancellationToken: cancellationToken);
-
-                // check in test if it works
-
-                /*var job = await GetJob(batchClient, jobId, cancellationToken);
-
-                if (job is null)
-                    return;
-
-                await DeleteTask(batchClient, jobId, taskId, cancellationToken);
-
-                job.AddTask(task);
-                await job.CommitChangesAsync(cancellationToken: cancellationToken);*/
-            }
-        }
-
         private static async Task SetJobTerminationAsync(BatchClient batchClient, string jobId, CancellationToken cancellationToken = default)
         {
             await batchClient.UpdateJobAsync(jobId, terminateJobAfterTasksCompleted: true, cancellationToken: cancellationToken);
