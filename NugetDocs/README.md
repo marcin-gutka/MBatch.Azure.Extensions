@@ -24,7 +24,7 @@ It is possible to create custom role(s) within a Azure Subscription and assign a
 [Documentation](https://github.com/marcin-gutka/MBatch/blob/master/Docs/Main.md)
 
 # Examples
-TODO: Provide here link to example API project
+[Test API](https://github.com/marcin-gutka/MBatch.Azure.Extensions.TestApi)
 
 # Troubleshooting
 [Github issues](https://github.com/marcin-gutka/MBatch/issues)
