@@ -50,6 +50,7 @@ Recovers unhealthy nodes in a pool.
 #### Remarks:
 - By providing 
 - For `ComputeNodeState.Offline` -> enabling scheduling.
+- For `ComputeNodeState.Deallocated` -> enabling scheduling.
 - For `ComputeNodeState.Unusable` -> reboot.
 - For `ComputeNodeState.Unknown` -> node removal if pool is not in `AllocationState.Resizing` state.
 
