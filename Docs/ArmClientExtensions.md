@@ -199,7 +199,7 @@ If the provided `skuName` matches any supported SKU, it is chosen. Otherwise, a 
 string sku = armClient.GetVirtualMachineSize(
     subscriptionId: "12345-abcde-67890",
     location: AzureLocation.WestEurope,
-    skuName: "Standard_D2_v3",
+    skuName: "2016-datacenter-smalldisk",
     minMemory: 4.0,
     minvCPUs: 2.0
 );

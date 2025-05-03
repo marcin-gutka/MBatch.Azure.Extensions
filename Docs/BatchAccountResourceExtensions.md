@@ -81,11 +81,11 @@ Creates a pool in the Batch Account if it does not already exist.
 ```csharp
 await batchAccountResource.CreatePoolAsync(
     poolId: "MyPool",
-    vmOffer: "UbuntuServer",
-    vmPublisher: "Canonical",
-    vmSku: "18.04-LTS",
-    vmNodeAgentSkuId: "batch.node.ubuntu 18.04",
-    poolVMSize: "Standard_D2_v3",
+    vmOffer: "windowsserver",
+    vmPublisher: "microsoftwindowsserver",
+    vmSku: "2016-datacenter-smalldisk",
+    vmNodeAgentSkuId: "batch.node.windows amd64",
+    poolVMSize: "Standard_A1_v2",
     applications: new List<ApplicationPackageReference> { appPackage },
     identities: new List<ManagedIdentityInfo> { identity },
     startTaskModel: myStartTaskModel,

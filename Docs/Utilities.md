@@ -11,7 +11,7 @@
 ---
 
 <a name="utilities-cloud-task-create-task"></a>
-### `CreateTask(string taskId, string commandLine, IList<EnvironmentSetting>? environmentSettings = null, List<string>? dependsOnTaskIds = null)`
+### `CreateTask(string taskId, string commandLine, IList<EnvironmentSetting>? environmentSettings = null, List<string>? dependsOnTaskIds = null, bool? isPoolScope = null, bool? isAdmin = null)`
 
 Creates a new `CloudTask` object.
 
@@ -20,6 +20,8 @@ Creates a new `CloudTask` object.
 - **`string commandLine`**: Command line to execute the task.
 - **`IList<EnvironmentSetting>? environmentSettings`** *(optional)*: Collection of `EnvironmentSetting` objects.
 - **`List<string>? dependsOnTaskIds`** *(optional)*: List of task IDs that the current task depends on.
+- **`bool? dependsOnTaskIds`** *(optional)*: Sets AutoUserScope. If `true` Pool scope is set, otherwise task scope.
+- **`bool? dependsOnTaskIds`** *(optional)*: Sets Elevation Level. If `true` Elevation level is set to Admin, otherwise NonAdmin.
 
 #### Returns:
 **`CloudTask`**: A newly created `CloudTask` object.
@@ -33,7 +35,9 @@ CloudTask task = CreateTask(
     {
         new EnvironmentSetting("VAR_NAME", "VAR_VALUE")
     },
-    dependsOnTaskIds: new List<string> { "Task-1", "Task-2" }
+    dependsOnTaskIds: new List<string> { "Task-1", "Task-2" },
+    true,
+    true
 );
 ```
 ---
@@ -102,8 +106,8 @@ Returns a `VirtualMachineConfiguration` from the provided images based on the gi
 ```csharp
 VirtualMachineConfiguration vmConfig = MatchVirtualMachineConfiguration(
     images: imageList,
-    sku: "Standard_D2_v3",
-    offer: "OfferName",
-    publisher: "PublisherName"
+    sku: "2016-datacenter-smalldisk",
+    offer: "windowsserver",
+    publisher: "microsoftwindowsserver"
 );
 ```
